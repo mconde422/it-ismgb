@@ -1,0 +1,576 @@
+<!DOCTYPE html>
+<html lang="fr" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>IT-ISMGB — Détail tâche</title>
+  <link rel="stylesheet" href="css/variables.css" />
+  <link rel="stylesheet" href="css/base.css" />
+  <link rel="stylesheet" href="css/layout.css" />
+  <link rel="stylesheet" href="css/components.css" />
+  <link rel="stylesheet" href="css/forms.css" />
+  <style>
+    .task-detail-grid {
+      display: grid;
+      grid-template-columns: 1fr 300px;
+      gap: 1.5rem;
+      align-items: start;
+    }
+    .task-meta-panel {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-default);
+      border-radius: var(--radius-md);
+      padding: 1.25rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      position: sticky;
+      top: 80px;
+    }
+    .meta-item { display: flex; flex-direction: column; gap: 0.375rem; }
+    .meta-label { font-size: var(--text-xs); font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em; color: var(--text-muted); }
+    .task-title-editable {
+      font-size: var(--text-2xl);
+      font-weight: 700;
+      width: 100%;
+      background: none;
+      border: none;
+      color: var(--text-primary);
+      font-family: inherit;
+      outline: none;
+      border-bottom: 2px solid transparent;
+      padding: 0;
+      transition: border-color var(--transition);
+    }
+    .task-title-editable:focus { border-bottom-color: var(--accent-primary); }
+    .task-desc-editable {
+      width: 100%;
+      background: none;
+      border: none;
+      color: var(--text-secondary);
+      font-family: inherit;
+      font-size: var(--text-sm);
+      outline: none;
+      resize: none;
+      padding: 0;
+      line-height: 1.7;
+      min-height: 80px;
+      border-bottom: 2px solid transparent;
+      transition: border-color var(--transition);
+    }
+    .task-desc-editable:focus { border-bottom-color: var(--accent-primary); color: var(--text-primary); }
+    .section-title {
+      font-size: var(--text-sm);
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--text-secondary);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 0.75rem;
+    }
+    .comment-item {
+      display: flex;
+      gap: 0.75rem;
+      padding: 0.75rem 0;
+      border-bottom: 1px solid var(--border-muted);
+    }
+    .comment-item:last-child { border-bottom: none; }
+    .comment-content { flex: 1; }
+    .comment-header { display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.25rem; }
+    .comment-author { font-size: var(--text-sm); font-weight: 600; }
+    .comment-time { font-size: var(--text-xs); color: var(--text-muted); }
+    .comment-text { font-size: var(--text-sm); color: var(--text-primary); line-height: 1.6; }
+    .comment-input-area { display: flex; gap: 0.625rem; align-items: flex-start; margin-top: 1rem; }
+    .comment-input { flex: 1; background: var(--bg-tertiary); border: 1px solid var(--border-default); border-radius: var(--radius-sm); padding: 0.5rem 0.75rem; font-family: inherit; font-size: var(--text-sm); color: var(--text-primary); resize: none; outline: none; min-height: 36px; transition: all var(--transition); }
+    .comment-input:focus { border-color: var(--accent-primary); background: var(--bg-secondary); }
+    @media (max-width: 900px) {
+      .task-detail-grid { grid-template-columns: 1fr; }
+      .task-meta-panel { position: static; }
+    }
+  </style>
+</head>
+<body>
+
+<div id="page-loader" class="page-loader"><div class="spinner"></div></div>
+<div id="toast-container" class="toast-container"></div>
+<div id="sidebar-overlay" class="sidebar-overlay"></div>
+
+<div class="app-shell">
+  <aside class="sidebar" id="sidebar">
+    <a href="my-tasks.html" class="sidebar-logo">
+      <div class="sidebar-logo-icon"><svg viewBox="0 0 24 24" fill="white"><path d="M20 3H4a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h16a1 1 0 0 0 1-1V4a1 1 0 0 0-1-1zm-1 12H5V5h14v10zm-2 4H7v2h10v-2z"/></svg></div>
+      <div class="sidebar-logo-text"><span class="sidebar-logo-title">IT-ISMGB</span><span class="sidebar-logo-sub">Service Informatique</span></div>
+    </a>
+    <nav class="sidebar-nav">
+      <div class="sidebar-section">
+        <div class="sidebar-section-label">Principal</div>
+        <a href="my-tasks.html" class="nav-item">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>Mes tâches
+        </a>
+        <a href="groups.html" class="nav-item">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>Mes groupes
+        </a>
+        <a href="search.html" class="nav-item">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>Recherche
+        </a>
+      </div>
+      <div class="sidebar-section" data-admin-only style="display:none">
+        <div class="sidebar-section-label">Administration</div>
+        <a href="dashboard.html" class="nav-item"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>Dashboard</a>
+        <a href="admin.html" class="nav-item"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>Administration</a>
+      </div>
+    </nav>
+    <div class="sidebar-footer">
+      <div class="sidebar-user-avatar" id="sidebar-user-avatar">?</div>
+      <div class="sidebar-user-info">
+        <div class="sidebar-user-name" id="sidebar-user-name">…</div>
+        <div class="sidebar-user-role" id="sidebar-user-role">Membre</div>
+      </div>
+      <button class="sidebar-logout" data-logout title="Déconnexion">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+      </button>
+    </div>
+  </aside>
+
+  <div class="main-content">
+    <header class="header">
+      <button class="sidebar-toggle" id="sidebar-toggle"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg></button>
+      <div class="header-breadcrumb" id="task-breadcrumb">
+        <a href="my-tasks.html" class="breadcrumb-item">Mes tâches</a>
+        <span class="breadcrumb-sep">›</span>
+        <span class="breadcrumb-item current" id="bc-task-title">Tâche</span>
+      </div>
+      <div class="header-actions">
+        <button class="header-btn" onclick="toggleThemePage()" title="Thème">
+          <span data-theme-icon="sun"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg></span>
+          <span data-theme-icon="moon" style="display:none"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg></span>
+        </button>
+        <div class="header-avatar" id="header-avatar">?</div>
+      </div>
+    </header>
+
+    <main class="page-content" id="task-main" style="display:none">
+      <!-- Done button -->
+      <div id="done-banner" class="d-flex justify-between items-center" style="background:rgba(47,129,247,0.08);border:1px solid rgba(47,129,247,0.2);border-radius:var(--radius-sm);padding:0.75rem 1rem;margin-bottom:1.5rem;display:none!important">
+        <span class="text-sm font-medium">Cette tâche est en cours — prête à être marquée comme terminée ?</span>
+        <button class="btn btn-success btn-sm" onclick="markAsDone()">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+          Marquer terminée
+        </button>
+      </div>
+
+      <div class="task-detail-grid">
+        <!-- Main column -->
+        <div>
+          <!-- Title & description -->
+          <div class="card card-body mb-4">
+            <input type="text" class="task-title-editable mb-3" id="task-title-input" placeholder="Titre de la tâche" />
+            <textarea class="task-desc-editable" id="task-desc-input" placeholder="Ajoutez une description…"></textarea>
+            <div class="d-flex gap-2 mt-3">
+              <button class="btn btn-primary btn-sm" onclick="saveTaskEdits()">Sauvegarder</button>
+              <button class="btn btn-ghost btn-sm" onclick="cancelEdits()">Annuler</button>
+            </div>
+          </div>
+
+          <!-- Subtasks -->
+          <div class="card card-body mb-4">
+            <div class="section-title">
+              <span>Sous-tâches <span id="subtask-progress" class="text-muted"></span></span>
+              <button class="btn btn-ghost btn-sm" onclick="addSubtask()">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                Ajouter
+              </button>
+            </div>
+            <div class="progress-bar mb-3" id="subtask-progress-bar" style="display:none">
+              <div class="progress-fill" id="subtask-fill"></div>
+            </div>
+            <div class="subtask-list" id="subtask-list"></div>
+            <div id="subtask-add-form" style="display:none;margin-top:0.75rem">
+              <div class="d-flex gap-2">
+                <input type="text" id="subtask-input" class="form-input" placeholder="Titre de la sous-tâche" style="flex:1" />
+                <button class="btn btn-primary btn-sm" onclick="confirmAddSubtask()">Ajouter</button>
+                <button class="btn btn-ghost btn-sm" onclick="cancelAddSubtask()">Annuler</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Comments -->
+          <div class="card card-body mb-4">
+            <div class="section-title">Commentaires <span id="comment-count" class="text-muted"></span></div>
+            <div id="comment-list"></div>
+            <div class="comment-input-area">
+              <div class="avatar avatar-sm" id="comment-avatar" style="background:var(--accent-primary);flex-shrink:0;margin-top:2px">?</div>
+              <textarea class="comment-input" id="comment-input" placeholder="Écrire un commentaire… (Entrée pour envoyer)" rows="1"></textarea>
+              <button class="btn btn-primary btn-sm" onclick="submitComment()">Envoyer</button>
+            </div>
+          </div>
+
+          <!-- Activity -->
+          <div class="card card-body">
+            <div class="section-title">Historique</div>
+            <div class="activity-timeline" id="task-activity"></div>
+          </div>
+        </div>
+
+        <!-- Meta panel -->
+        <div class="task-meta-panel">
+          <div class="meta-item">
+            <span class="meta-label">Statut</span>
+            <select class="form-select form-select-sm" id="meta-status" onchange="updateMetaField('status',this.value)">
+              <option value="todo">À faire</option>
+              <option value="in_progress">En cours</option>
+              <option value="blocked">Bloqué</option>
+              <option value="done">Terminé</option>
+            </select>
+          </div>
+          <div class="meta-item">
+            <span class="meta-label">Priorité</span>
+            <select class="form-select" id="meta-priority" onchange="updateMetaField('priority',this.value)">
+              <option value="critical">Critique</option>
+              <option value="high">Haute</option>
+              <option value="normal">Normale</option>
+              <option value="low">Basse</option>
+            </select>
+          </div>
+          <div class="meta-item">
+            <span class="meta-label">Catégorie</span>
+            <select class="form-select" id="meta-category" onchange="updateMetaField('category',this.value)">
+              <option value="reseau">Réseau</option>
+              <option value="materiel">Matériel</option>
+              <option value="logiciel">Logiciel</option>
+              <option value="maintenance">Maintenance</option>
+              <option value="graphisme">Graphisme</option>
+            </select>
+          </div>
+          <div class="meta-item">
+            <span class="meta-label">Date d'échéance</span>
+            <input type="date" class="form-input" id="meta-due" onchange="updateMetaField('due_date',this.value||null)" />
+          </div>
+          <div class="meta-item">
+            <span class="meta-label">Assigné à</span>
+            <div id="meta-assignee" class="text-sm text-secondary">Non assigné</div>
+          </div>
+          <div class="meta-item">
+            <span class="meta-label">Créateur</span>
+            <div id="meta-creator" class="text-sm text-secondary">—</div>
+          </div>
+          <div class="meta-item">
+            <span class="meta-label">Créé le</span>
+            <div id="meta-created" class="text-sm text-secondary">—</div>
+          </div>
+          <div class="meta-item">
+            <span class="meta-label">Tags</span>
+            <div id="meta-tags" class="d-flex flex-wrap gap-1 mt-1"></div>
+          </div>
+          <div class="divider"></div>
+          <button class="btn btn-danger w-full btn-sm" id="delete-task-btn" onclick="deleteCurrent()">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4h6v2"/></svg>
+            Supprimer la tâche
+          </button>
+        </div>
+      </div>
+    </main>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/appwrite@16/dist/iife/sdk.min.js"></script>
+<script type="module">
+  import { initTheme, toggleTheme } from './js/theme.js';
+  import { requireAuth, populateSidebarUser, isAdmin, initLogoutBtn } from './js/auth.js';
+  import { initSidebar, showToast, openModal, closeModal, renderActivityLog, confirmDialog, renderMemberAvatar } from './js/ui.js';
+  import { getTaskById, updateTask, deleteTask, getSubtasks, createSubtask, toggleSubtask, deleteSubtask, changeTaskStatus } from './js/tasks.js';
+  import { getComments, addComment, deleteComment } from './js/comments.js';
+  import { getTaskActivity, logActivity } from './js/activity.js';
+  import { subscribeToComments, subscribeToSubtasks, unsubscribeAll } from './js/realtime.js';
+  import { hidePageLoader } from './js/ui.js';
+  import { formatDate, formatDateTime, formatRelative, getInitials, stringToColor, getUrlParam, escapeHtml, isOverdue } from './js/utils.js';
+
+  window.toggleThemePage = toggleTheme;
+
+  let currentUser = null;
+  let task        = null;
+  let subtasks    = [];
+  let comments    = [];
+  let originalTitle = '';
+  let originalDesc  = '';
+  const taskId = getUrlParam('id');
+
+  async function init() {
+    initTheme();
+    initSidebar();
+    initLogoutBtn();
+    if (!taskId) { window.location.href = 'my-tasks.html'; return; }
+
+    currentUser = await requireAuth();
+    if (!currentUser) return;
+    populateSidebarUser(currentUser);
+
+    await loadTask();
+    await Promise.all([loadSubtasks(), loadComments(), loadActivity()]);
+    setupRealtime();
+    hidePageLoader();
+    document.getElementById('task-main').style.display = '';
+  }
+
+  async function loadTask() {
+    task = await getTaskById(taskId);
+    if (!task) { window.location.href = 'my-tasks.html'; return; }
+
+    document.title = `IT-ISMGB — ${task.title}`;
+    document.getElementById('bc-task-title').textContent = task.title;
+
+    // Breadcrumb
+    if (task.workspace_id) {
+      document.getElementById('task-breadcrumb').innerHTML = `
+        <a href="groups.html" class="breadcrumb-item">Groupes</a>
+        <span class="breadcrumb-sep">›</span>
+        <a href="group-detail.html?id=${task.workspace_id}" class="breadcrumb-item">Groupe</a>
+        <span class="breadcrumb-sep">›</span>
+        <span class="breadcrumb-item current">${escapeHtml(task.title)}</span>
+      `;
+    }
+
+    originalTitle = task.title;
+    originalDesc  = task.description || '';
+
+    document.getElementById('task-title-input').value = task.title;
+    document.getElementById('task-desc-input').value  = task.description || '';
+
+    // Meta panel
+    document.getElementById('meta-status').value   = task.status;
+    document.getElementById('meta-priority').value = task.priority;
+    document.getElementById('meta-category').value = task.category;
+    if (task.due_date) document.getElementById('meta-due').value = task.due_date.slice(0,10);
+    document.getElementById('meta-assignee').textContent = task.assignee_name || 'Non assigné';
+    document.getElementById('meta-creator').textContent  = task.creator_id === currentUser.$id ? 'Vous' : task.creator_id.slice(0,12);
+    document.getElementById('meta-created').textContent  = formatDate(task.created_at);
+
+    // Tags
+    const tagsEl = document.getElementById('meta-tags');
+    tagsEl.innerHTML = (task.tags||[]).length
+      ? task.tags.map(t => `<span class="badge badge-member">${escapeHtml(t)}</span>`).join('')
+      : '<span class="text-xs text-muted">Aucun</span>';
+
+    // Done banner
+    if (task.status !== 'done') {
+      document.getElementById('done-banner').style.setProperty('display','flex','important');
+    }
+
+    // Delete button: only creator or admin
+    const canDelete = task.creator_id === currentUser.$id || isAdmin(currentUser);
+    if (!canDelete) document.getElementById('delete-task-btn').style.display = 'none';
+
+    // Comment avatar
+    const avatarEl = document.getElementById('comment-avatar');
+    avatarEl.textContent = getInitials(currentUser.name || currentUser.email);
+    avatarEl.style.background = stringToColor(currentUser.$id);
+  }
+
+  async function loadSubtasks() {
+    subtasks = await getSubtasks(taskId);
+    renderSubtasks();
+  }
+
+  function renderSubtasks() {
+    const done  = subtasks.filter(s => s.is_done).length;
+    const total = subtasks.length;
+    const listEl= document.getElementById('subtask-list');
+    document.getElementById('subtask-progress').textContent = total ? `${done}/${total} complétées` : '';
+
+    const bar  = document.getElementById('subtask-progress-bar');
+    const fill = document.getElementById('subtask-fill');
+    if (total > 0) {
+      bar.style.display = '';
+      fill.style.width  = `${Math.round(done/total*100)}%`;
+      fill.className    = `progress-fill ${done===total?'success':done>0?'':''}`;
+    } else {
+      bar.style.display = 'none';
+    }
+
+    listEl.innerHTML = subtasks.map(s => `
+      <div class="subtask-item" data-subtask-id="${s.$id}">
+        <div class="subtask-checkbox ${s.is_done?'checked':''}" onclick="toggleSub('${s.$id}',${!s.is_done})">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+        </div>
+        <span class="subtask-title ${s.is_done?'done':''}">${escapeHtml(s.title)}</span>
+        <button class="subtask-delete" onclick="removeSub('${s.$id}')">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+      </div>
+    `).join('') || '<p class="text-xs text-muted">Aucune sous-tâche.</p>';
+  }
+
+  window.addSubtask = () => {
+    document.getElementById('subtask-add-form').style.display = '';
+    document.getElementById('subtask-input').focus();
+  };
+  window.cancelAddSubtask = () => {
+    document.getElementById('subtask-add-form').style.display = 'none';
+    document.getElementById('subtask-input').value = '';
+  };
+  window.confirmAddSubtask = async () => {
+    const title = document.getElementById('subtask-input').value.trim();
+    if (!title) return;
+    try {
+      const s = await createSubtask(taskId, title, currentUser.$id);
+      subtasks.push(s);
+      renderSubtasks();
+      cancelAddSubtask();
+    } catch { showToast('Erreur lors de l\'ajout','error'); }
+  };
+  window.toggleSub = async (subtaskId, isDone) => {
+    try {
+      await toggleSubtask(subtaskId, isDone);
+      const s = subtasks.find(s => s.$id === subtaskId);
+      if (s) s.is_done = isDone;
+      renderSubtasks();
+    } catch { showToast('Erreur','error'); }
+  };
+  window.removeSub = async (subtaskId) => {
+    try {
+      await deleteSubtask(subtaskId);
+      subtasks = subtasks.filter(s => s.$id !== subtaskId);
+      renderSubtasks();
+    } catch { showToast('Erreur lors de la suppression','error'); }
+  };
+
+  async function loadComments() {
+    comments = await getComments(taskId);
+    renderComments();
+  }
+
+  function renderComments() {
+    const el = document.getElementById('comment-list');
+    document.getElementById('comment-count').textContent = comments.length ? `(${comments.length})` : '';
+    if (!comments.length) {
+      el.innerHTML = '<p class="text-xs text-muted mb-3">Aucun commentaire.</p>';
+      return;
+    }
+    el.innerHTML = comments.map(c => {
+      const color    = stringToColor(c.author_id);
+      const initials = getInitials(c.author_name);
+      const isOwn    = c.author_id === currentUser.$id;
+      return `
+        <div class="comment-item">
+          <div class="avatar avatar-sm" style="background:${color};flex-shrink:0;margin-top:2px">${escapeHtml(initials)}</div>
+          <div class="comment-content">
+            <div class="comment-header">
+              <span class="comment-author">${escapeHtml(c.author_name)}</span>
+              <span class="comment-time">${formatRelative(c.created_at)}</span>
+              ${isOwn ? `<button class="btn btn-ghost btn-sm" style="color:var(--accent-danger);padding:0;margin-left:auto" onclick="removeComment('${c.$id}')"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4h6v2"/></svg></button>` : ''}
+            </div>
+            <div class="comment-text">${escapeHtml(c.content)}</div>
+          </div>
+        </div>
+      `;
+    }).join('');
+  }
+
+  window.submitComment = async () => {
+    const content = document.getElementById('comment-input').value.trim();
+    if (!content) return;
+    try {
+      const c = await addComment(taskId, content, currentUser);
+      await logActivity({ task_id: taskId, user_id: currentUser.$id, user_name: currentUser.name, action: 'commented' });
+      comments.push(c);
+      renderComments();
+      document.getElementById('comment-input').value = '';
+    } catch { showToast('Erreur lors de l\'envoi','error'); }
+  };
+
+  document.getElementById('comment-input')?.addEventListener('keydown', e => {
+    if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); submitComment(); }
+  });
+
+  window.removeComment = async (commentId) => {
+    try {
+      await deleteComment(commentId);
+      comments = comments.filter(c => c.$id !== commentId);
+      renderComments();
+    } catch { showToast('Erreur','error'); }
+  };
+
+  async function loadActivity() {
+    const logs = await getTaskActivity(taskId);
+    const el   = document.getElementById('task-activity');
+    el.innerHTML = logs.length ? logs.map(l => renderActivityLog(l)).join('') : '<p class="text-xs text-muted">Aucune activité.</p>';
+  }
+
+  window.saveTaskEdits = async () => {
+    const title = document.getElementById('task-title-input').value.trim();
+    const desc  = document.getElementById('task-desc-input').value.trim();
+    if (!title) { showToast('Le titre est requis','error'); return; }
+    try {
+      await updateTask(taskId, { title, description: desc }, currentUser);
+      task.title = title;
+      task.description = desc;
+      originalTitle = title;
+      originalDesc  = desc;
+      document.getElementById('bc-task-title').textContent = title;
+      document.title = `IT-ISMGB — ${title}`;
+      showToast('Tâche mise à jour','success');
+    } catch { showToast('Erreur lors de la mise à jour','error'); }
+  };
+
+  window.cancelEdits = () => {
+    document.getElementById('task-title-input').value = originalTitle;
+    document.getElementById('task-desc-input').value  = originalDesc;
+  };
+
+  window.updateMetaField = async (field, value) => {
+    try {
+      const updates = { [field]: value || null };
+      if (field === 'status') {
+        const old = task.status;
+        await changeTaskStatus(taskId, value, old, currentUser);
+        if (value !== 'done') document.getElementById('done-banner').style.setProperty('display','flex','important');
+        else document.getElementById('done-banner').style.setProperty('display','none','important');
+      } else {
+        await updateTask(taskId, updates, currentUser);
+      }
+      task[field] = value || null;
+      showToast('Mis à jour','success');
+    } catch { showToast('Erreur','error'); }
+  };
+
+  window.markAsDone = () => {
+    document.getElementById('meta-status').value = 'done';
+    updateMetaField('status', 'done');
+  };
+
+  window.deleteCurrent = () => {
+    confirmDialog(`Supprimer définitivement "${task?.title}" ?`, async () => {
+      try {
+        await deleteTask(taskId, currentUser, task.title);
+        showToast('Tâche supprimée','success');
+        setTimeout(() => window.history.back(), 800);
+      } catch { showToast('Erreur lors de la suppression','error'); }
+    });
+  };
+
+  function setupRealtime() {
+    subscribeToComments(taskId, currentUser.$id, (comment) => {
+      comments.push(comment);
+      renderComments();
+      showToast(`${comment.author_name} a commenté`,'info');
+    });
+    subscribeToSubtasks(taskId, (subtask, events) => {
+      if (events.some(e=>e.includes('create'))) {
+        if (!subtasks.find(s=>s.$id===subtask.$id)) subtasks.push(subtask);
+      } else if (events.some(e=>e.includes('update'))) {
+        const idx = subtasks.findIndex(s=>s.$id===subtask.$id);
+        if (idx !== -1) subtasks[idx] = subtask;
+      } else if (events.some(e=>e.includes('delete'))) {
+        subtasks = subtasks.filter(s=>s.$id!==subtask.$id);
+      }
+      renderSubtasks();
+    });
+  }
+
+  window.addEventListener('unload', unsubscribeAll);
+  init();
+</script>
+</body>
+</html>

@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="fr" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>IT-ISMGB — Dashboard Admin</title>
+  <link rel="stylesheet" href="css/variables.css" />
+  <link rel="stylesheet" href="css/base.css" />
+  <link rel="stylesheet" href="css/layout.css" />
+  <link rel="stylesheet" href="css/components.css" />
+  <link rel="stylesheet" href="css/dashboard.css" />
+</head>
+<body>
+
+<div id="page-loader" class="page-loader"><div class="spinner"></div></div>
+<div id="toast-container" class="toast-container"></div>
+<div id="sidebar-overlay" class="sidebar-overlay"></div>
+
+<div class="app-shell">
+  <aside class="sidebar" id="sidebar">
+    <a href="dashboard.html" class="sidebar-logo">
+      <div class="sidebar-logo-icon"><svg viewBox="0 0 24 24" fill="white"><path d="M20 3H4a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h16a1 1 0 0 0 1-1V4a1 1 0 0 0-1-1zm-1 12H5V5h14v10zm-2 4H7v2h10v-2z"/></svg></div>
+      <div class="sidebar-logo-text"><span class="sidebar-logo-title">IT-ISMGB</span><span class="sidebar-logo-sub">Service Informatique</span></div>
+    </a>
+    <nav class="sidebar-nav">
+      <div class="sidebar-section">
+        <div class="sidebar-section-label">Principal</div>
+        <a href="my-tasks.html" class="nav-item"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>Mes tâches</a>
+        <a href="groups.html" class="nav-item"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>Mes groupes</a>
+        <a href="search.html" class="nav-item"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>Recherche</a>
+      </div>
+      <div class="sidebar-section">
+        <div class="sidebar-section-label">Administration</div>
+        <a href="dashboard.html" class="nav-item active"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>Dashboard</a>
+        <a href="admin.html" class="nav-item"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>Administration</a>
+      </div>
+    </nav>
+    <div class="sidebar-footer">
+      <div class="sidebar-user-avatar" id="sidebar-user-avatar">?</div>
+      <div class="sidebar-user-info"><div class="sidebar-user-name" id="sidebar-user-name">…</div><div class="sidebar-user-role" id="sidebar-user-role">Admin</div></div>
+      <button class="sidebar-logout" data-logout title="Déconnexion"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg></button>
+    </div>
+  </aside>
+
+  <div class="main-content">
+    <header class="header">
+      <button class="sidebar-toggle" id="sidebar-toggle"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg></button>
+      <div class="header-breadcrumb"><span class="breadcrumb-item current">Dashboard</span></div>
+      <div class="header-actions">
+        <button class="header-btn" onclick="toggleThemePage()"><span data-theme-icon="sun"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg></span><span data-theme-icon="moon" style="display:none"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg></span></button>
+        <div class="header-avatar" id="header-avatar">?</div>
+      </div>
+    </header>
+
+    <main class="page-content">
+      <div class="page-header">
+        <div>
+          <h1 class="page-title">Dashboard</h1>
+          <p class="page-subtitle">Vue globale du service IT-ISMGB</p>
+        </div>
+      </div>
+
+      <!-- KPIs -->
+      <div class="kpi-grid" id="kpi-grid">
+        <div class="kpi-card">
+          <div class="kpi-card-icon blue"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg></div>
+          <div class="kpi-card-value" id="kpi-total">—</div>
+          <div class="kpi-card-label">Total tâches</div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-card-icon blue"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg></div>
+          <div class="kpi-card-value" id="kpi-in-progress">—</div>
+          <div class="kpi-card-label">En cours</div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-card-icon red"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg></div>
+          <div class="kpi-card-value" id="kpi-blocked">—</div>
+          <div class="kpi-card-label">Bloquées</div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-card-icon green"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg></div>
+          <div class="kpi-card-value" id="kpi-done">—</div>
+          <div class="kpi-card-label">Terminées</div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-card-icon orange"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></div>
+          <div class="kpi-card-value" id="kpi-overdue">—</div>
+          <div class="kpi-card-label">En retard</div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-card-icon purple"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></div>
+          <div class="kpi-card-value" id="kpi-groups">—</div>
+          <div class="kpi-card-label">Groupes actifs</div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-card-icon blue"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></div>
+          <div class="kpi-card-value" id="kpi-members">—</div>
+          <div class="kpi-card-label">Membres</div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-card-icon red"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg></div>
+          <div class="kpi-card-value" id="kpi-critical">—</div>
+          <div class="kpi-card-label">Critiques</div>
+        </div>
+      </div>
+
+      <!-- Charts row -->
+      <div class="dashboard-grid">
+        <!-- Bar chart: tasks by category -->
+        <div class="chart-panel">
+          <div class="chart-panel-header">
+            <div>
+              <div class="chart-panel-title">Tâches par catégorie</div>
+              <div class="chart-panel-subtitle">Distribution actuelle</div>
+            </div>
+          </div>
+          <div class="bar-chart" id="bar-chart" style="position:relative"></div>
+          <div class="chart-legend" id="bar-legend"></div>
+        </div>
+
+        <!-- Donut chart: by status -->
+        <div class="chart-panel">
+          <div class="chart-panel-header">
+            <div>
+              <div class="chart-panel-title">Répartition par statut</div>
+            </div>
+          </div>
+          <div class="donut-chart-wrapper">
+            <div class="donut-chart" style="width:140px;height:140px">
+              <svg width="140" height="140" id="donut-svg"></svg>
+              <div class="donut-center">
+                <div class="donut-center-value" id="donut-total">0</div>
+                <div class="donut-center-label">tâches</div>
+              </div>
+            </div>
+            <div class="donut-legend" id="donut-legend"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Bottom row -->
+      <div class="dashboard-grid">
+        <!-- Overdue tasks -->
+        <div class="chart-panel">
+          <div class="chart-panel-header">
+            <div class="chart-panel-title" style="color:var(--accent-danger)">⚠ Tâches en retard</div>
+          </div>
+          <div class="overdue-list" id="overdue-list">
+            <div class="d-flex justify-center p-4"><div class="spinner"></div></div>
+          </div>
+        </div>
+
+        <!-- Recent activity -->
+        <div class="chart-panel">
+          <div class="chart-panel-title mb-3">Activité récente</div>
+          <div class="activity-timeline" id="dash-activity">
+            <div class="d-flex justify-center p-4"><div class="spinner"></div></div>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/appwrite@16/dist/iife/sdk.min.js"></script>
+<script type="module">
+  import { initTheme, toggleTheme } from './js/theme.js';
+  import { requireAdmin, populateSidebarUser, initLogoutBtn } from './js/auth.js';
+  import { initSidebar, showToast, renderActivityLog } from './js/ui.js';
+  import { getAllTasks, getOverdueTasks } from './js/tasks.js';
+  import { getAllWorkspaces } from './js/workspaces.js';
+  import { getGlobalActivity } from './js/activity.js';
+  import { databases, Query } from './js/appwrite.js';
+  import { DATABASE_ID, COLLECTIONS, CATEGORY_LABELS } from './js/config.js';
+  import { hidePageLoader } from './js/ui.js';
+  import { escapeHtml, formatDate } from './js/utils.js';
+
+  window.toggleThemePage = toggleTheme;
+
+  const CAT_COLORS = {
+    reseau     : '#58A6FF',
+    materiel   : '#F0883E',
+    logiciel   : '#BC8CFF',
+    maintenance: '#3FB950',
+    graphisme  : '#FF7B72',
+  };
+  const STATUS_COLORS = {
+    todo       : '#8B949E',
+    in_progress: '#2F81F7',
+    blocked    : '#F85149',
+    done       : '#3FB950',
+  };
+
+  async function init() {
+    initTheme();
+    initSidebar();
+    initLogoutBtn();
+
+    const user = await requireAdmin();
+    if (!user) return;
+    populateSidebarUser(user);
+
+    const [tasks, workspaces, overdue, activity] = await Promise.all([
+      getAllTasks(),
+      getAllWorkspaces(),
+      getOverdueTasks(),
+      getGlobalActivity(15),
+    ]);
+
+    // Try to get total count of users
+    let memberCount = '--';
+    try {
+      const res = await databases.listDocuments(DATABASE_ID, COLLECTIONS.WORKSPACES, [Query.limit(1)]);
+      memberCount = '30+'; // Placeholder — user count requires Admin API
+    } catch {}
+
+    renderKPIs(tasks, workspaces, overdue, memberCount);
+    renderBarChart(tasks);
+    renderDonut(tasks);
+    renderOverdue(overdue);
+    renderActivity(activity);
+
+    hidePageLoader();
+  }
+
+  function renderKPIs(tasks, workspaces, overdue, memberCount) {
+    const inProgress = tasks.filter(t=>t.status==='in_progress').length;
+    const blocked    = tasks.filter(t=>t.status==='blocked').length;
+    const done       = tasks.filter(t=>t.status==='done').length;
+    const critical   = tasks.filter(t=>t.priority==='critical').length;
+
+    document.getElementById('kpi-total').textContent       = tasks.length;
+    document.getElementById('kpi-in-progress').textContent = inProgress;
+    document.getElementById('kpi-blocked').textContent     = blocked;
+    document.getElementById('kpi-done').textContent        = done;
+    document.getElementById('kpi-overdue').textContent     = overdue.length;
+    document.getElementById('kpi-groups').textContent      = workspaces.length;
+    document.getElementById('kpi-members').textContent     = memberCount;
+    document.getElementById('kpi-critical').textContent    = critical;
+  }
+
+  function renderBarChart(tasks) {
+    const cats = Object.keys(CATEGORY_LABELS);
+    const counts = cats.map(c => tasks.filter(t=>t.category===c).length);
+    const max = Math.max(...counts, 1);
+    const chart = document.getElementById('bar-chart');
+
+    chart.innerHTML = cats.map((cat, i) => {
+      const pct = Math.round(counts[i] / max * 100);
+      return `
+        <div class="bar-group">
+          <div class="bar-wrapper">
+            <div class="bar" style="width:28px;height:${Math.max(pct,2)}%;background:${CAT_COLORS[cat]};opacity:0.85" data-value="${counts[i]}" title="${CATEGORY_LABELS[cat]}: ${counts[i]}"></div>
+          </div>
+          <div class="bar-label" style="font-size:10px">${CATEGORY_LABELS[cat].slice(0,5)}</div>
+        </div>
+      `;
+    }).join('');
+
+    document.getElementById('bar-legend').innerHTML = cats.map((cat,i) => `
+      <div class="chart-legend-item">
+        <div class="chart-legend-color" style="background:${CAT_COLORS[cat]}"></div>
+        ${escapeHtml(CATEGORY_LABELS[cat])} (${counts[i]})
+      </div>
+    `).join('');
+  }
+
+  function renderDonut(tasks) {
+    const statuses = ['todo','in_progress','blocked','done'];
+    const counts = statuses.map(s => tasks.filter(t=>t.status===s).length);
+    const total  = counts.reduce((a,b)=>a+b,0) || 1;
+    const labels = { todo:'À faire', in_progress:'En cours', blocked:'Bloqué', done:'Terminé' };
+
+    const svg  = document.getElementById('donut-svg');
+    const cx   = 70;
+    const cy   = 70;
+    const R    = 55;
+    const r    = 35;
+    let angle  = 0;
+    let paths  = '';
+
+    counts.forEach((count, i) => {
+      const pct     = count / total;
+      const sweep   = pct * 2 * Math.PI;
+      const x1      = cx + R * Math.cos(angle);
+      const y1      = cy + R * Math.sin(angle);
+      const x2      = cx + R * Math.cos(angle + sweep);
+      const y2      = cy + R * Math.sin(angle + sweep);
+      const x3      = cx + r * Math.cos(angle + sweep);
+      const y3      = cy + r * Math.sin(angle + sweep);
+      const x4      = cx + r * Math.cos(angle);
+      const y4      = cy + r * Math.sin(angle);
+      const large   = sweep > Math.PI ? 1 : 0;
+
+      if (count > 0) {
+        paths += `<path d="M${x1},${y1} A${R},${R} 0 ${large},1 ${x2},${y2} L${x3},${y3} A${r},${r} 0 ${large},0 ${x4},${y4} Z" fill="${STATUS_COLORS[statuses[i]]}" opacity="0.9"/>`;
+      }
+      angle += sweep;
+    });
+
+    svg.innerHTML = paths;
+    document.getElementById('donut-total').textContent = tasks.length;
+
+    document.getElementById('donut-legend').innerHTML = statuses.map((s, i) => `
+      <div class="donut-legend-item">
+        <div class="donut-legend-label">
+          <div class="donut-legend-dot" style="background:${STATUS_COLORS[s]}"></div>
+          ${labels[s]}
+        </div>
+        <div class="d-flex items-center gap-2">
+          <span class="donut-legend-value">${counts[i]}</span>
+          <span class="donut-legend-pct">${Math.round(counts[i]/total*100)}%</span>
+        </div>
+      </div>
+    `).join('');
+  }
+
+  function renderOverdue(tasks) {
+    const el = document.getElementById('overdue-list');
+    if (!tasks.length) {
+      el.innerHTML = '<p class="text-success text-sm">✓ Aucune tâche en retard</p>';
+      return;
+    }
+    el.innerHTML = tasks.map(t => `
+      <a href="task-detail.html?id=${t.$id}" class="overdue-item">
+        <span class="overdue-item-title">${escapeHtml(t.title)}</span>
+        <span class="overdue-item-date">${formatDate(t.due_date)}</span>
+      </a>
+    `).join('');
+  }
+
+  function renderActivity(logs) {
+    const el = document.getElementById('dash-activity');
+    el.innerHTML = logs.length ? logs.map(l => renderActivityLog(l)).join('') : '<p class="text-secondary text-sm">Aucune activité récente.</p>';
+  }
+
+  init();
+</script>
+</body>
+</html>

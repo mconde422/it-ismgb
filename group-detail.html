@@ -1,0 +1,609 @@
+<!DOCTYPE html>
+<html lang="fr" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>IT-ISMGB — Groupe</title>
+  <link rel="stylesheet" href="css/variables.css" />
+  <link rel="stylesheet" href="css/base.css" />
+  <link rel="stylesheet" href="css/layout.css" />
+  <link rel="stylesheet" href="css/components.css" />
+  <link rel="stylesheet" href="css/forms.css" />
+  <link rel="stylesheet" href="css/kanban.css" />
+</head>
+<body>
+
+<div id="page-loader" class="page-loader"><div class="spinner"></div></div>
+<div id="toast-container" class="toast-container"></div>
+<div id="sidebar-overlay" class="sidebar-overlay"></div>
+
+<div class="app-shell">
+  <!-- SIDEBAR (same as other pages) -->
+  <aside class="sidebar" id="sidebar">
+    <a href="my-tasks.html" class="sidebar-logo">
+      <div class="sidebar-logo-icon">
+        <svg viewBox="0 0 24 24" fill="white"><path d="M20 3H4a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h16a1 1 0 0 0 1-1V4a1 1 0 0 0-1-1zm-1 12H5V5h14v10zm-2 4H7v2h10v-2z"/></svg>
+      </div>
+      <div class="sidebar-logo-text">
+        <span class="sidebar-logo-title">IT-ISMGB</span>
+        <span class="sidebar-logo-sub">Service Informatique</span>
+      </div>
+    </a>
+    <nav class="sidebar-nav">
+      <div class="sidebar-section">
+        <div class="sidebar-section-label">Principal</div>
+        <a href="my-tasks.html" class="nav-item">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
+          Mes tâches
+        </a>
+        <a href="groups.html" class="nav-item active">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+          Mes groupes
+        </a>
+        <a href="search.html" class="nav-item">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          Recherche
+        </a>
+      </div>
+      <div class="sidebar-section" data-admin-only style="display:none">
+        <div class="sidebar-section-label">Administration</div>
+        <a href="dashboard.html" class="nav-item">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+          Dashboard
+        </a>
+        <a href="admin.html" class="nav-item">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+          Administration
+        </a>
+      </div>
+    </nav>
+    <div class="sidebar-footer">
+      <div class="sidebar-user-avatar" id="sidebar-user-avatar">?</div>
+      <div class="sidebar-user-info">
+        <div class="sidebar-user-name" id="sidebar-user-name">…</div>
+        <div class="sidebar-user-role" id="sidebar-user-role">Membre</div>
+      </div>
+      <button class="sidebar-logout" data-logout title="Déconnexion">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+      </button>
+    </div>
+  </aside>
+
+  <div class="main-content">
+    <header class="header">
+      <button class="sidebar-toggle" id="sidebar-toggle">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+      </button>
+      <div class="header-breadcrumb">
+        <a href="groups.html" class="breadcrumb-item">Mes groupes</a>
+        <span class="breadcrumb-sep">›</span>
+        <span class="breadcrumb-item current" id="breadcrumb-name">Groupe</span>
+      </div>
+      <div class="header-search">
+        <input type="search" class="header-search-input" id="header-search" placeholder="Rechercher…" />
+      </div>
+      <div class="header-actions">
+        <button class="header-btn" onclick="toggleThemePage()" title="Thème">
+          <span data-theme-icon="sun"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg></span>
+          <span data-theme-icon="moon" style="display:none"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg></span>
+        </button>
+        <div class="header-avatar" id="header-avatar">?</div>
+      </div>
+    </header>
+
+    <main class="page-content">
+      <!-- Group header -->
+      <div class="page-header" id="group-header">
+        <div class="d-flex items-center gap-3">
+          <div id="group-icon-display" style="width:44px;height:44px;border-radius:var(--radius-sm);display:flex;align-items:center;justify-content:center;font-size:1.5rem">💻</div>
+          <div>
+            <h1 class="page-title" id="group-name-display">Chargement…</h1>
+            <p class="page-subtitle" id="group-desc-display"></p>
+          </div>
+        </div>
+        <div class="d-flex items-center gap-2">
+          <div class="realtime-indicator">
+            <div class="realtime-dot"></div>
+            Temps réel
+          </div>
+          <div class="member-avatars" id="group-members-avatars"></div>
+          <button class="btn btn-secondary" id="invite-btn" style="display:none" onclick="openInviteModal()">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="8.5" cy="7" r="4"/><line x1="20" y1="8" x2="20" y2="14"/><line x1="23" y1="11" x2="17" y2="11"/></svg>
+            Inviter
+          </button>
+          <button class="btn btn-primary" onclick="openGroupTaskModal()">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+            Nouvelle tâche
+          </button>
+        </div>
+      </div>
+
+      <!-- Tabs -->
+      <div class="tabs" id="group-tabs">
+        <button class="tab-btn active" data-tab="tasks" onclick="switchTab('tasks')">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
+          Tâches
+          <span class="badge" id="tab-task-count">0</span>
+        </button>
+        <button class="tab-btn" data-tab="members" onclick="switchTab('members')">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+          Membres
+          <span class="badge" id="tab-member-count">0</span>
+        </button>
+        <button class="tab-btn" data-tab="activity" onclick="switchTab('activity')">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+          Activité
+        </button>
+      </div>
+
+      <!-- Tab: Tasks -->
+      <div id="tab-tasks" class="tab-panel active">
+        <div class="filters-bar">
+          <select id="g-filter-status" onchange="applyGroupFilters()">
+            <option value="">Tous statuts</option>
+            <option value="todo">À faire</option>
+            <option value="in_progress">En cours</option>
+            <option value="blocked">Bloqué</option>
+            <option value="done">Terminé</option>
+          </select>
+          <select id="g-filter-priority" onchange="applyGroupFilters()">
+            <option value="">Toutes priorités</option>
+            <option value="critical">Critique</option>
+            <option value="high">Haute</option>
+            <option value="normal">Normale</option>
+            <option value="low">Basse</option>
+          </select>
+          <select id="g-filter-category" onchange="applyGroupFilters()">
+            <option value="">Toutes catégories</option>
+            <option value="reseau">Réseau</option>
+            <option value="materiel">Matériel</option>
+            <option value="logiciel">Logiciel</option>
+            <option value="maintenance">Maintenance</option>
+            <option value="graphisme">Graphisme</option>
+          </select>
+          <div class="view-toggle">
+            <button class="view-toggle-btn active" id="g-view-list" onclick="switchView('list')" title="Liste">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
+            </button>
+            <button class="view-toggle-btn" id="g-view-kanban" onclick="switchView('kanban')" title="Kanban">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="18" rx="1"/><rect x="14" y="3" width="7" height="11" rx="1"/></svg>
+            </button>
+          </div>
+        </div>
+        <div id="group-tasks-list" style="display:flex;flex-direction:column;gap:0.625rem"></div>
+        <div id="group-kanban-container" style="display:none"></div>
+      </div>
+
+      <!-- Tab: Members -->
+      <div id="tab-members" class="tab-panel">
+        <div id="members-list" style="display:flex;flex-direction:column;gap:0.5rem"></div>
+      </div>
+
+      <!-- Tab: Activity -->
+      <div id="tab-activity" class="tab-panel">
+        <div class="activity-timeline" id="activity-list">
+          <div class="d-flex justify-center p-4"><div class="spinner"></div></div>
+        </div>
+      </div>
+    </main>
+  </div>
+</div>
+
+<!-- Modal: Task for group -->
+<div class="modal-backdrop" id="group-task-modal">
+  <div class="modal modal-lg">
+    <div class="modal-header">
+      <h2 class="modal-title" id="group-task-modal-title">Nouvelle tâche de groupe</h2>
+      <button class="modal-close" onclick="closeModal('group-task-modal')">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+    <div class="modal-body">
+      <form id="group-task-form" novalidate>
+        <input type="hidden" id="gt-id" />
+        <div class="form-group">
+          <label class="form-label" for="gt-title">Titre <span class="required">*</span></label>
+          <input type="text" id="gt-title" class="form-input" required />
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="gt-desc">Description</label>
+          <textarea id="gt-desc" class="form-textarea" rows="3"></textarea>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label" for="gt-category">Catégorie <span class="required">*</span></label>
+            <select id="gt-category" class="form-select" required>
+              <option value="">Choisir…</option>
+              <option value="reseau">Réseau</option>
+              <option value="materiel">Matériel</option>
+              <option value="logiciel">Logiciel</option>
+              <option value="maintenance">Maintenance</option>
+              <option value="graphisme">Graphisme</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="gt-priority">Priorité <span class="required">*</span></label>
+            <select id="gt-priority" class="form-select" required>
+              <option value="normal" selected>Normale</option>
+              <option value="critical">Critique</option>
+              <option value="high">Haute</option>
+              <option value="low">Basse</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label" for="gt-status">Statut <span class="required">*</span></label>
+            <select id="gt-status" class="form-select" required>
+              <option value="todo" selected>À faire</option>
+              <option value="in_progress">En cours</option>
+              <option value="blocked">Bloqué</option>
+              <option value="done">Terminé</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="gt-due">Date d'échéance</label>
+            <input type="date" id="gt-due" class="form-input" />
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="gt-assignee">Assigner à</label>
+          <select id="gt-assignee" class="form-select">
+            <option value="">Non assigné</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="gt-tags">Tags</label>
+          <input type="text" id="gt-tags" class="form-input" placeholder="tags séparés par virgule" />
+        </div>
+      </form>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary" onclick="closeModal('group-task-modal')">Annuler</button>
+      <button class="btn btn-primary" id="gt-submit-btn" data-loading-text="Enregistrement…" onclick="submitGroupTask()">
+        Créer la tâche
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- Modal: Invite -->
+<div class="modal-backdrop" id="invite-modal">
+  <div class="modal modal-sm">
+    <div class="modal-header">
+      <h2 class="modal-title">Inviter un membre</h2>
+      <button class="modal-close" onclick="closeModal('invite-modal')">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+    <div class="modal-body">
+      <div class="form-group">
+        <label class="form-label" for="invite-email">Email de l'utilisateur</label>
+        <input type="email" id="invite-email" class="form-input" placeholder="utilisateur@ismgb.edu" />
+        <span class="form-hint">L'utilisateur recevra une invitation à rejoindre le groupe.</span>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary" onclick="closeModal('invite-modal')">Annuler</button>
+      <button class="btn btn-primary" id="invite-submit-btn" data-loading-text="Envoi…" onclick="submitInvite()">Inviter</button>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/appwrite@16/dist/iife/sdk.min.js"></script>
+<script type="module">
+  import { initTheme, toggleTheme } from './js/theme.js';
+  import { requireAuth, populateSidebarUser, isAdmin, initLogoutBtn } from './js/auth.js';
+  import { initSidebar, initHeaderSearch, showToast, openModal, closeModal, renderTaskCard, renderKanbanBoard, renderActivityLog, renderEmptyState, confirmDialog, setButtonLoading, validateForm, renderMemberAvatar } from './js/ui.js';
+  import { getGroupTasks, createTask, updateTask, deleteTask, changeTaskStatus } from './js/tasks.js';
+  import { getWorkspaceById, inviteMemberByEmail, removeMember } from './js/workspaces.js';
+  import { getWorkspaceActivity } from './js/activity.js';
+  import { subscribeToGroupTasks, unsubscribeAll } from './js/realtime.js';
+  import { filterTasks, sortTasks } from './js/search.js';
+  import { hidePageLoader } from './js/ui.js';
+  import { escapeHtml, stringToColor, getInitials, getUrlParam } from './js/utils.js';
+
+  window.toggleThemePage = toggleTheme;
+  window.openModal  = openModal;
+  window.closeModal = closeModal;
+
+  let currentUser = null;
+  let workspace   = null;
+  let allTasks    = [];
+  let currentView = 'list';
+  let currentTab  = 'tasks';
+  const workspaceId = getUrlParam('id');
+
+  async function init() {
+    initTheme();
+    initSidebar();
+    initHeaderSearch();
+    initLogoutBtn();
+
+    if (!workspaceId) { window.location.href = 'groups.html'; return; }
+
+    currentUser = await requireAuth();
+    if (!currentUser) return;
+    populateSidebarUser(currentUser);
+
+    await Promise.all([loadWorkspace(), loadTasks()]);
+    setupRealtime();
+    hidePageLoader();
+  }
+
+  async function loadWorkspace() {
+    workspace = await getWorkspaceById(workspaceId);
+    if (!workspace) { window.location.href = 'groups.html'; return; }
+
+    document.title = `IT-ISMGB — ${workspace.name}`;
+    document.getElementById('breadcrumb-name').textContent = workspace.name;
+    document.getElementById('group-name-display').textContent = workspace.name;
+    document.getElementById('group-desc-display').textContent = workspace.description || '';
+    const iconEl = document.getElementById('group-icon-display');
+    iconEl.textContent = workspace.icon || '💻';
+    iconEl.style.background = (workspace.color||'#2F81F7') + '22';
+
+    // Members avatars
+    const shown = workspace.members.slice(0,5);
+    const extra = workspace.members.length - shown.length;
+    document.getElementById('group-members-avatars').innerHTML =
+      shown.map(id => `<div class="member-avatar" style="background:${stringToColor(id)};border:2px solid var(--bg-secondary)">${id.slice(0,2).toUpperCase()}</div>`).join('') +
+      (extra > 0 ? `<div class="member-avatar member-avatar-more">+${extra}</div>` : '');
+
+    document.getElementById('tab-member-count').textContent = workspace.members.length;
+
+    const canManage = workspace.created_by === currentUser.$id || isAdmin(currentUser);
+    if (canManage) document.getElementById('invite-btn').style.display = '';
+
+    populateAssigneeSelect();
+  }
+
+  function populateAssigneeSelect() {
+    const sel = document.getElementById('gt-assignee');
+    sel.innerHTML = '<option value="">Non assigné</option>' +
+      (workspace.members || []).map(id =>
+        `<option value="${id}">${id === currentUser.$id ? 'Moi (' + currentUser.name + ')' : id.slice(0,8)+'…'}</option>`
+      ).join('');
+  }
+
+  async function loadTasks() {
+    allTasks = await getGroupTasks(workspaceId);
+    document.getElementById('tab-task-count').textContent = allTasks.length;
+    applyGroupFilters();
+  }
+
+  function applyGroupFiltersLocal() {
+    const filters = {
+      status  : document.getElementById('g-filter-status').value,
+      priority: document.getElementById('g-filter-priority').value,
+      category: document.getElementById('g-filter-category').value,
+    };
+    const sorted = sortTasks(filterTasks(allTasks, filters));
+    if (currentView === 'list') renderListView(sorted);
+    else renderKanbanViewFn(sorted);
+  }
+
+  window.applyGroupFilters = applyGroupFiltersLocal;
+
+  function renderListView(tasks) {
+    const el = document.getElementById('group-tasks-list');
+    el.style.display = 'flex';
+    el.style.flexDirection = 'column';
+    el.style.gap = '0.625rem';
+    document.getElementById('group-kanban-container').style.display = 'none';
+    if (!tasks.length) {
+      el.innerHTML = renderEmptyState('📋','Aucune tâche','Ajoutez la première tâche à ce groupe.','+ Nouvelle tâche','openGroupTaskModal()');
+      return;
+    }
+    el.innerHTML = tasks.map(t => renderTaskCard(t)).join('');
+  }
+
+  function renderKanbanViewFn(tasks) {
+    document.getElementById('group-tasks-list').style.display = 'none';
+    const container = document.getElementById('group-kanban-container');
+    container.style.display = '';
+    renderKanbanBoard(tasks, 'group-kanban-container', {
+      onMove: async (taskId, newStatus) => {
+        const task = allTasks.find(t => t.$id === taskId);
+        if (!task || task.status === newStatus) return;
+        try {
+          await changeTaskStatus(taskId, newStatus, task.status, currentUser);
+          task.status = newStatus;
+          applyGroupFiltersLocal();
+          showToast('Statut mis à jour', 'success');
+        } catch { showToast('Erreur', 'error'); applyGroupFiltersLocal(); }
+      }
+    });
+  }
+
+  window.switchView = (view) => {
+    currentView = view;
+    document.getElementById('g-view-list').classList.toggle('active', view === 'list');
+    document.getElementById('g-view-kanban').classList.toggle('active', view === 'kanban');
+    applyGroupFiltersLocal();
+  };
+
+  window.switchTab = async (tab) => {
+    currentTab = tab;
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.toggle('active', b.dataset.tab === tab));
+    document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+    document.getElementById(`tab-${tab}`)?.classList.add('active');
+
+    if (tab === 'members') renderMembersTab();
+    if (tab === 'activity') await loadActivityTab();
+  };
+
+  function renderMembersTab() {
+    const el = document.getElementById('members-list');
+    if (!workspace) return;
+    const canManage = workspace.created_by === currentUser.$id || isAdmin(currentUser);
+    el.innerHTML = workspace.members.map(id => {
+      const isOwner = id === workspace.created_by;
+      const isMe    = id === currentUser.$id;
+      const color   = stringToColor(id);
+      const initials = id.slice(0,2).toUpperCase();
+      return `
+        <div class="d-flex items-center gap-3" style="padding:0.75rem 1rem;background:var(--bg-secondary);border:1px solid var(--border-default);border-radius:var(--radius-sm)">
+          <div class="avatar avatar-md" style="background:${color}">${initials}</div>
+          <div style="flex:1">
+            <div class="text-sm font-semibold">${isMe ? currentUser.name+' (vous)' : id.slice(0,8)+'…'}</div>
+            <div class="text-xs text-secondary">${isOwner ? 'Propriétaire' : 'Membre'}</div>
+          </div>
+          ${isOwner ? '<span class="badge badge-owner">Owner</span>' : '<span class="badge badge-member">Membre</span>'}
+          ${canManage && !isOwner && !isMe ? `
+            <button class="btn btn-ghost btn-sm" onclick="removeMemberUI('${id}')" style="color:var(--accent-danger)">Retirer</button>
+          ` : ''}
+        </div>
+      `;
+    }).join('');
+  }
+
+  async function loadActivityTab() {
+    const { getWorkspaceActivity } = await import('./js/activity.js');
+    const logs = await getWorkspaceActivity(workspaceId);
+    const el = document.getElementById('activity-list');
+    if (!logs.length) {
+      el.innerHTML = '<p class="text-secondary text-sm p-4">Aucune activité enregistrée.</p>';
+      return;
+    }
+    el.innerHTML = logs.map(log => renderActivityLog(log)).join('');
+  }
+
+  // ---- Realtime ----
+  function setupRealtime() {
+    subscribeToGroupTasks(workspaceId, currentUser.$id, {
+      onUpdate: async (task, event) => {
+        if (event === 'create') allTasks.unshift(task);
+        else if (event === 'update') {
+          const idx = allTasks.findIndex(t => t.$id === task.$id);
+          if (idx !== -1) allTasks[idx] = task;
+        }
+        document.getElementById('tab-task-count').textContent = allTasks.length;
+        applyGroupFiltersLocal();
+      },
+      onDelete: (task) => {
+        allTasks = allTasks.filter(t => t.$id !== task.$id);
+        document.getElementById('tab-task-count').textContent = allTasks.length;
+        applyGroupFiltersLocal();
+      }
+    });
+  }
+
+  // ---- Group task modal ----
+  window.openGroupTaskModal = () => {
+    document.getElementById('gt-id').value = '';
+    document.getElementById('group-task-form').reset();
+    document.getElementById('group-task-modal-title').textContent = 'Nouvelle tâche de groupe';
+    document.getElementById('gt-submit-btn').textContent = 'Créer la tâche';
+    openModal('group-task-modal');
+  };
+
+  window.editTask = (taskId) => {
+    const task = allTasks.find(t => t.$id === taskId);
+    if (!task) return;
+    document.getElementById('gt-id').value       = taskId;
+    document.getElementById('gt-title').value    = task.title;
+    document.getElementById('gt-desc').value     = task.description || '';
+    document.getElementById('gt-category').value = task.category;
+    document.getElementById('gt-priority').value = task.priority;
+    document.getElementById('gt-status').value   = task.status;
+    document.getElementById('gt-tags').value     = (task.tags||[]).join(', ');
+    if (task.due_date) document.getElementById('gt-due').value = task.due_date.slice(0,10);
+    document.getElementById('gt-assignee').value = task.assignee_id || '';
+    document.getElementById('group-task-modal-title').textContent = 'Modifier la tâche';
+    document.getElementById('gt-submit-btn').textContent = 'Enregistrer';
+    openModal('group-task-modal');
+  };
+
+  window.submitGroupTask = async () => {
+    const form = document.getElementById('group-task-form');
+    if (!validateForm(form)) return;
+    const btn    = document.getElementById('gt-submit-btn');
+    const taskId = document.getElementById('gt-id').value;
+    const assigneeId = document.getElementById('gt-assignee').value;
+    const data = {
+      title        : document.getElementById('gt-title').value.trim(),
+      description  : document.getElementById('gt-desc').value.trim(),
+      category     : document.getElementById('gt-category').value,
+      priority     : document.getElementById('gt-priority').value,
+      status       : document.getElementById('gt-status').value,
+      visibility   : 'group',
+      workspace_id : workspaceId,
+      assignee_id  : assigneeId || null,
+      assignee_name: assigneeId === currentUser.$id ? currentUser.name : (assigneeId ? assigneeId.slice(0,8) : null),
+      due_date     : document.getElementById('gt-due').value || null,
+      tags         : document.getElementById('gt-tags').value.split(',').map(t=>t.trim()).filter(Boolean),
+    };
+    setButtonLoading(btn, true);
+    try {
+      if (taskId) {
+        await updateTask(taskId, data, currentUser);
+        const idx = allTasks.findIndex(t => t.$id === taskId);
+        if (idx !== -1) allTasks[idx] = { ...allTasks[idx], ...data };
+        showToast('Tâche mise à jour','success');
+      } else {
+        const created = await createTask(data, currentUser);
+        allTasks.unshift(created);
+        showToast('Tâche créée','success');
+      }
+      document.getElementById('tab-task-count').textContent = allTasks.length;
+      closeModal('group-task-modal');
+      applyGroupFiltersLocal();
+    } catch (err) {
+      showToast(err?.message || 'Erreur','error');
+    } finally { setButtonLoading(btn, false); }
+  };
+
+  window.deleteTaskUI = (taskId, taskTitle) => {
+    confirmDialog(`Supprimer "${taskTitle}" ?`, async () => {
+      try {
+        await deleteTask(taskId, currentUser);
+        allTasks = allTasks.filter(t => t.$id !== taskId);
+        document.getElementById('tab-task-count').textContent = allTasks.length;
+        applyGroupFiltersLocal();
+        showToast('Tâche supprimée','success');
+      } catch { showToast('Erreur lors de la suppression','error'); }
+    });
+  };
+
+  window.openInviteModal = () => {
+    document.getElementById('invite-email').value = '';
+    openModal('invite-modal');
+  };
+
+  window.submitInvite = async () => {
+    const email = document.getElementById('invite-email').value.trim();
+    if (!email) { showToast('Veuillez entrer un email','error'); return; }
+    const btn = document.getElementById('invite-submit-btn');
+    setButtonLoading(btn, true);
+    try {
+      await inviteMemberByEmail(workspaceId, email, workspace);
+      workspace.pending_invites = [...(workspace.pending_invites||[]), email];
+      closeModal('invite-modal');
+      showToast(`Invitation envoyée à ${email}`,'success');
+    } catch (err) {
+      showToast(err?.message || 'Erreur','error');
+    } finally { setButtonLoading(btn, false); }
+  };
+
+  window.removeMemberUI = (memberId) => {
+    confirmDialog('Retirer ce membre du groupe ?', async () => {
+      try {
+        await removeMember(workspaceId, memberId, workspace);
+        workspace.members = workspace.members.filter(id => id !== memberId);
+        renderMembersTab();
+        showToast('Membre retiré','success');
+      } catch (err) { showToast(err?.message || 'Erreur','error'); }
+    }, 'Retirer le membre');
+  };
+
+  window.quickAddTask = (status) => {
+    document.getElementById('gt-status').value = status;
+    openGroupTaskModal();
+  };
+
+  window.addEventListener('unload', unsubscribeAll);
+  init();
+</script>
+</body>
+</html>

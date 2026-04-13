@@ -1,0 +1,144 @@
+/* ============================================
+   IT-ISMGB — CSS Variables (Design Tokens)
+   Dark / Light Mode
+   ============================================ */
+
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&family=JetBrains+Mono:wght@400;500&display=swap');
+
+/* ---- DARK MODE (default) ---- */
+:root,
+:root[data-theme="dark"] {
+  /* Backgrounds */
+  --bg-primary   : #0D1117;
+  --bg-secondary : #161B22;
+  --bg-tertiary  : #21262D;
+  --bg-overlay   : #30363D;
+
+  /* Accents */
+  --accent-primary : #2F81F7;
+  --accent-hover   : #388BFD;
+  --accent-success : #3FB950;
+  --accent-warning : #D29922;
+  --accent-danger  : #F85149;
+  --accent-info    : #58A6FF;
+
+  /* Textes */
+  --text-primary   : #E6EDF3;
+  --text-secondary : #8B949E;
+  --text-muted     : #484F58;
+
+  /* Bordures */
+  --border-default : #30363D;
+  --border-muted   : #21262D;
+  --border-accent  : #388BFD;
+
+  /* Catégories */
+  --cat-reseau     : #58A6FF;
+  --cat-materiel   : #F0883E;
+  --cat-logiciel   : #BC8CFF;
+  --cat-maintenance: #3FB950;
+  --cat-graphisme  : #FF7B72;
+
+  /* Priorités */
+  --prio-critical  : #F85149;
+  --prio-high      : #D29922;
+  --prio-normal    : #58A6FF;
+  --prio-low       : #8B949E;
+
+  /* Statuts */
+  --status-todo       : #8B949E;
+  --status-in-progress: #2F81F7;
+  --status-blocked    : #F85149;
+  --status-done       : #3FB950;
+
+  /* Ombres */
+  --shadow-sm : 0 1px 3px rgba(0,0,0,0.4);
+  --shadow-md : 0 4px 12px rgba(0,0,0,0.5);
+  --shadow-lg : 0 8px 24px rgba(0,0,0,0.6);
+
+  /* Radius */
+  --radius-sm : 6px;
+  --radius-md : 10px;
+  --radius-lg : 16px;
+
+  /* Transitions */
+  --transition : 0.2s ease;
+
+  /* Sidebar */
+  --sidebar-width    : 240px;
+  --header-height    : 60px;
+  --sidebar-bg       : var(--bg-secondary);
+  --sidebar-text     : var(--text-secondary);
+  --sidebar-active-bg: var(--bg-tertiary);
+  --sidebar-active   : var(--text-primary);
+}
+
+/* ---- LIGHT MODE ---- */
+:root[data-theme="light"] {
+  --bg-primary   : #FFFFFF;
+  --bg-secondary : #F6F8FA;
+  --bg-tertiary  : #EAEEF2;
+  --bg-overlay   : #FFFFFF;
+
+  --accent-primary : #0969DA;
+  --accent-hover   : #0860CA;
+  --accent-success : #1A7F37;
+  --accent-warning : #9A6700;
+  --accent-danger  : #CF222E;
+  --accent-info    : #0550AE;
+
+  --text-primary   : #1F2328;
+  --text-secondary : #656D76;
+  --text-muted     : #A1AAB4;
+
+  --border-default : #D0D7DE;
+  --border-muted   : #EAEEF2;
+  --border-accent  : #0969DA;
+
+  --cat-reseau     : #0969DA;
+  --cat-materiel   : #BC4C00;
+  --cat-logiciel   : #8250DF;
+  --cat-maintenance: #1A7F37;
+  --cat-graphisme  : #CF222E;
+
+  --prio-critical  : #CF222E;
+  --prio-high      : #9A6700;
+  --prio-normal    : #0969DA;
+  --prio-low       : #656D76;
+
+  --status-todo       : #656D76;
+  --status-in-progress: #0969DA;
+  --status-blocked    : #CF222E;
+  --status-done       : #1A7F37;
+
+  --shadow-sm : 0 1px 3px rgba(31,35,40,0.12);
+  --shadow-md : 0 4px 12px rgba(31,35,40,0.15);
+  --shadow-lg : 0 8px 24px rgba(31,35,40,0.2);
+
+  --radius-sm : 6px;
+  --radius-md : 10px;
+  --radius-lg : 16px;
+
+  --transition : 0.2s ease;
+
+  --sidebar-width    : 240px;
+  --header-height    : 60px;
+  --sidebar-bg       : var(--bg-secondary);
+  --sidebar-text     : var(--text-secondary);
+  --sidebar-active-bg: var(--bg-tertiary);
+  --sidebar-active   : var(--text-primary);
+}
+
+/* ---- TYPOGRAPHIE ---- */
+:root {
+  --font-body : 'Plus Jakarta Sans', sans-serif;
+  --font-mono : 'JetBrains Mono', monospace;
+
+  --text-xs   : 0.75rem;
+  --text-sm   : 0.875rem;
+  --text-base : 1rem;
+  --text-lg   : 1.125rem;
+  --text-xl   : 1.25rem;
+  --text-2xl  : 1.5rem;
+  --text-3xl  : 1.875rem;
+}

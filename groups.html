@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="fr" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>IT-ISMGB — Mes Groupes</title>
+  <link rel="stylesheet" href="css/variables.css" />
+  <link rel="stylesheet" href="css/base.css" />
+  <link rel="stylesheet" href="css/layout.css" />
+  <link rel="stylesheet" href="css/components.css" />
+  <link rel="stylesheet" href="css/forms.css" />
+  <style>
+    .groups-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 1rem;
+    }
+  </style>
+</head>
+<body>
+
+<div id="page-loader" class="page-loader"><div class="spinner"></div></div>
+<div id="toast-container" class="toast-container"></div>
+<div id="sidebar-overlay" class="sidebar-overlay"></div>
+
+<div class="app-shell">
+  <aside class="sidebar" id="sidebar">
+    <a href="my-tasks.html" class="sidebar-logo">
+      <div class="sidebar-logo-icon">
+        <svg viewBox="0 0 24 24" fill="white"><path d="M20 3H4a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h16a1 1 0 0 0 1-1V4a1 1 0 0 0-1-1zm-1 12H5V5h14v10zm-2 4H7v2h10v-2z"/></svg>
+      </div>
+      <div class="sidebar-logo-text">
+        <span class="sidebar-logo-title">IT-ISMGB</span>
+        <span class="sidebar-logo-sub">Service Informatique</span>
+      </div>
+    </a>
+    <nav class="sidebar-nav">
+      <div class="sidebar-section">
+        <div class="sidebar-section-label">Principal</div>
+        <a href="my-tasks.html" class="nav-item">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
+          Mes tâches
+        </a>
+        <a href="groups.html" class="nav-item active">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+          Mes groupes
+        </a>
+        <a href="search.html" class="nav-item">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          Recherche
+        </a>
+      </div>
+      <div class="sidebar-section" data-admin-only style="display:none">
+        <div class="sidebar-section-label">Administration</div>
+        <a href="dashboard.html" class="nav-item">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+          Dashboard
+        </a>
+        <a href="admin.html" class="nav-item">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+          Administration
+        </a>
+      </div>
+    </nav>
+    <div class="sidebar-footer">
+      <div class="sidebar-user-avatar" id="sidebar-user-avatar">?</div>
+      <div class="sidebar-user-info">
+        <div class="sidebar-user-name" id="sidebar-user-name">Chargement…</div>
+        <div class="sidebar-user-role" id="sidebar-user-role">Membre</div>
+      </div>
+      <button class="sidebar-logout" data-logout title="Déconnexion">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+      </button>
+    </div>
+  </aside>
+
+  <div class="main-content">
+    <header class="header">
+      <button class="sidebar-toggle" id="sidebar-toggle">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+      </button>
+      <div class="header-breadcrumb">
+        <span class="breadcrumb-item current">Mes groupes</span>
+      </div>
+      <div class="header-search">
+        <input type="search" class="header-search-input" id="header-search" placeholder="Rechercher…" />
+      </div>
+      <div class="header-actions">
+        <button class="header-btn" onclick="toggleThemePage()" title="Thème">
+          <span data-theme-icon="sun"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg></span>
+          <span data-theme-icon="moon" style="display:none"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg></span>
+        </button>
+        <div class="header-avatar" id="header-avatar">?</div>
+      </div>
+    </header>
+
+    <main class="page-content">
+      <div class="page-header">
+        <div>
+          <h1 class="page-title">Mes groupes</h1>
+          <p class="page-subtitle">Groupes de travail dont vous êtes membre</p>
+        </div>
+        <button class="btn btn-primary" onclick="openCreateGroupModal()">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          Créer un groupe
+        </button>
+      </div>
+
+      <div class="groups-grid" id="groups-grid">
+        <div class="d-flex justify-center p-4"><div class="spinner"></div></div>
+      </div>
+    </main>
+  </div>
+</div>
+
+<!-- Modal: Créer groupe -->
+<div class="modal-backdrop" id="group-modal">
+  <div class="modal">
+    <div class="modal-header">
+      <h2 class="modal-title">Créer un groupe</h2>
+      <button class="modal-close" onclick="closeModal('group-modal')">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+    <div class="modal-body">
+      <form id="group-form" novalidate>
+        <div class="form-group">
+          <label class="form-label" for="group-name">Nom du groupe <span class="required">*</span></label>
+          <input type="text" id="group-name" class="form-input" placeholder="Ex: Équipe Réseau" required />
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="group-desc">Description</label>
+          <textarea id="group-desc" class="form-textarea" placeholder="Objectifs du groupe…" rows="2"></textarea>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Icône</label>
+          <div class="emoji-picker-row" id="emoji-picker"></div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Couleur</label>
+          <div class="color-picker-group" id="color-picker"></div>
+        </div>
+      </form>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary" onclick="closeModal('group-modal')">Annuler</button>
+      <button class="btn btn-primary" id="group-submit-btn" data-loading-text="Création…" onclick="submitCreateGroup()">
+        Créer le groupe
+      </button>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/appwrite@16/dist/iife/sdk.min.js"></script>
+<script type="module">
+  import { initTheme, toggleTheme } from './js/theme.js';
+  import { requireAuth, populateSidebarUser, isAdmin, initLogoutBtn } from './js/auth.js';
+  import { initSidebar, initHeaderSearch, showToast, openModal, closeModal, setButtonLoading, confirmDialog, renderMemberAvatar, renderEmptyState } from './js/ui.js';
+  import { getMyWorkspaces, createWorkspace, deleteWorkspace } from './js/workspaces.js';
+  import { getGroupTasks } from './js/tasks.js';
+  import { hidePageLoader } from './js/ui.js';
+  import { escapeHtml, stringToColor } from './js/utils.js';
+  import { GROUP_EMOJIS, GROUP_COLORS } from './js/config.js';
+
+  window.toggleThemePage = toggleTheme;
+  window.closeModal = closeModal;
+
+  let currentUser  = null;
+  let allWorkspaces = [];
+  let selectedEmoji = '💻';
+  let selectedColor = '#2F81F7';
+
+  async function init() {
+    initTheme();
+    initSidebar();
+    initHeaderSearch();
+    initLogoutBtn();
+    currentUser = await requireAuth();
+    if (!currentUser) return;
+    populateSidebarUser(currentUser);
+    buildEmojiPicker();
+    buildColorPicker();
+    await loadGroups();
+    hidePageLoader();
+  }
+
+  async function loadGroups() {
+    try {
+      allWorkspaces = await getMyWorkspaces(currentUser.$id);
+      renderGroups();
+    } catch {
+      showToast('Erreur lors du chargement des groupes', 'error');
+    }
+  }
+
+  function renderGroups() {
+    const grid = document.getElementById('groups-grid');
+    if (!allWorkspaces.length) {
+      grid.innerHTML = renderEmptyState('👥', 'Aucun groupe', 'Créez votre premier groupe de travail.', '+ Créer un groupe', 'openCreateGroupModal()');
+      return;
+    }
+    grid.innerHTML = allWorkspaces.map(ws => renderGroupCard(ws)).join('');
+  }
+
+  function renderGroupCard(ws) {
+    const isOwner = ws.created_by === currentUser.$id;
+    const admin   = isAdmin(currentUser);
+    const members = ws.members || [];
+    const shown   = members.slice(0, 5);
+    const extra   = members.length - shown.length;
+    const avatarsHtml = shown.map(id => {
+      const color = stringToColor(id);
+      return `<div class="member-avatar" style="background:${color}">${id.slice(0,2).toUpperCase()}</div>`;
+    }).join('') + (extra > 0 ? `<div class="member-avatar member-avatar-more">+${extra}</div>` : '');
+
+    return `
+      <div class="group-card" style="border-top:3px solid ${ws.color||'#2F81F7'}">
+        <div class="group-card-header">
+          <div class="group-icon" style="background:${ws.color||'#2F81F7'}22">${ws.icon||'💻'}</div>
+          <div>
+            <div class="group-card-name">${escapeHtml(ws.name)}</div>
+            <div class="d-flex items-center gap-2 mt-1">
+              ${isOwner ? '<span class="badge badge-owner">Owner</span>' : '<span class="badge badge-member">Membre</span>'}
+            </div>
+          </div>
+        </div>
+        ${ws.description ? `<div class="group-card-desc">${escapeHtml(ws.description)}</div>` : ''}
+        <div class="group-card-footer">
+          <div class="member-avatars">${avatarsHtml}</div>
+          <div class="d-flex gap-2">
+            ${isOwner || admin ? `
+              <button class="btn btn-ghost btn-sm btn-icon" onclick="event.stopPropagation();deleteGroupUI('${ws.$id}','${escapeHtml(ws.name)}')" title="Supprimer">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4h6v2"/></svg>
+              </button>
+            ` : ''}
+            <a href="group-detail.html?id=${ws.$id}" class="btn btn-secondary btn-sm" onclick="event.stopPropagation()">Ouvrir</a>
+          </div>
+        </div>
+      </div>
+    `;
+  }
+
+  function buildEmojiPicker() {
+    const picker = document.getElementById('emoji-picker');
+    picker.innerHTML = GROUP_EMOJIS.map(e => `
+      <button type="button" class="emoji-btn ${e===selectedEmoji?'selected':''}"
+              onclick="selectEmoji('${e}',this)">${e}</button>
+    `).join('');
+  }
+
+  function buildColorPicker() {
+    const picker = document.getElementById('color-picker');
+    picker.innerHTML = GROUP_COLORS.map(c => `
+      <div class="color-swatch ${c===selectedColor?'selected':''}"
+           style="background:${c}"
+           onclick="selectColor('${c}',this)"></div>
+    `).join('');
+  }
+
+  window.selectEmoji = (emoji, btn) => {
+    selectedEmoji = emoji;
+    document.querySelectorAll('.emoji-btn').forEach(b => b.classList.remove('selected'));
+    btn.classList.add('selected');
+  };
+
+  window.selectColor = (color, swatch) => {
+    selectedColor = color;
+    document.querySelectorAll('.color-swatch').forEach(s => s.classList.remove('selected'));
+    swatch.classList.add('selected');
+  };
+
+  window.openCreateGroupModal = () => {
+    document.getElementById('group-form').reset();
+    selectedEmoji = '💻';
+    selectedColor = '#2F81F7';
+    buildEmojiPicker();
+    buildColorPicker();
+    openModal('group-modal');
+  };
+
+  window.submitCreateGroup = async () => {
+    const name = document.getElementById('group-name').value.trim();
+    if (!name) { showToast('Le nom du groupe est requis', 'error'); return; }
+
+    const btn = document.getElementById('group-submit-btn');
+    setButtonLoading(btn, true);
+    try {
+      await createWorkspace({
+        name,
+        description: document.getElementById('group-desc').value.trim(),
+        color: selectedColor,
+        icon : selectedEmoji,
+      }, currentUser);
+      closeModal('group-modal');
+      showToast('Groupe créé avec succès', 'success');
+      await loadGroups();
+    } catch (err) {
+      showToast(err?.message || 'Erreur lors de la création', 'error');
+    } finally {
+      setButtonLoading(btn, false);
+    }
+  };
+
+  window.deleteGroupUI = (groupId, groupName) => {
+    confirmDialog(
+      `Supprimer le groupe "${groupName}" et toutes ses tâches ? Cette action est irréversible.`,
+      async () => {
+        try {
+          await deleteWorkspace(groupId);
+          allWorkspaces = allWorkspaces.filter(w => w.$id !== groupId);
+          renderGroups();
+          showToast('Groupe supprimé', 'success');
+        } catch {
+          showToast('Erreur lors de la suppression', 'error');
+        }
+      },
+      'Supprimer le groupe'
+    );
+  };
+
+  init();
+</script>
+</body>
+</html>
