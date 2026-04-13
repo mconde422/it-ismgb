@@ -69,17 +69,14 @@ export async function approveRequest(requestId, tempPassword) {
 
   // Mark as approved
   return databases.updateDocument(DATABASE_ID, COL, requestId, {
-    status     : 'approved',
-    reviewed_at: new Date().toISOString(),
+    status: 'approved',
   });
 }
 
 // ---- Reject a request (admin) ----
 export async function rejectRequest(requestId, reason = '') {
   return databases.updateDocument(DATABASE_ID, COL, requestId, {
-    status       : 'rejected',
-    reject_reason: reason || null,
-    reviewed_at  : new Date().toISOString(),
+    status: 'rejected',
   });
 }
 
