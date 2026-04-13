@@ -50,14 +50,38 @@ export async function countPendingRequests() {
 
 // ---- Approve a request (admin): creates account + profile + marks approved ----
 export async function approveRequest(requestId, tempPassword) {
-  const { ID: AppwriteID, Account } = window.Appwrite;
+  const { ID: AppwriteID } = window.Appwrite;
   const { account } = await import('./appwrite.js');
 
   // Fetch the request
   const req = await databases.getDocument(DATABASE_ID, COL, requestId);
 
-  // Create the Appwrite account
-  const newUser = await account.create(AppwriteID.unique(), req.email, tempPassword, req.name);
+  // Validation
+  if (!req.email || !req.name) {
+    throw new Error('Email et nom sont requis');
+  }
+
+  if (req.status !== 'pending') {
+    throw new Error(`Cette demande a déjà été ${req.status === 'approved' ? 'approuvée' : 'rejetée'}`);
+  }
+
+  // Check if account already exists
+  let newUser = null;
+  try {
+    // Try to create the account
+    newUser = await account.create(AppwriteID.unique(), req.email, tempPassword, req.name);
+  } catch (error) {
+    // If account already exists, try to use it (error code 409 = Conflict)
+    if (error.code === 409 || (error.message && error.message.includes('already'))) {
+      console.warn('[requests.js] Compte existe déjà pour', req.email);
+      // Mark as approved anyway
+      return databases.updateDocument(DATABASE_ID, COL, requestId, {
+        status: 'approved',
+      });
+    }
+    // For other errors, re-throw
+    throw error;
+  }
 
   // Auto-create the public profile (best-effort)
   try {

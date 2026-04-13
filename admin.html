@@ -448,7 +448,13 @@
     const pass = document.getElementById('approve-password').value;
     if (!pass || pass.length < 8) { showToast('Le mot de passe doit faire au moins 8 caractères', 'error'); return; }
     const btn = document.getElementById('approve-submit-btn');
+    
+    // Empêcher les soumissions multiples
+    if (btn.disabled) return;
+    
     setButtonLoading(btn, true);
+    btn.disabled = true;
+    
     try {
       await approveRequest(pendingRequest.$id, pass);
       closeModal('approve-modal');
@@ -458,7 +464,10 @@
     } catch (err) {
       const msg = err?.message || 'Erreur lors de la création du compte';
       showToast(msg.includes('already') ? 'Cet email possède déjà un compte.' : msg, 'error');
-    } finally { setButtonLoading(btn, false); }
+    } finally { 
+      setButtonLoading(btn, false);
+      btn.disabled = false;
+    }
   };
 
   window.openRejectModal = (requestId) => {
@@ -473,13 +482,22 @@
     if (!pendingRequest) return;
     const reason = document.getElementById('reject-reason').value.trim();
     const btn = document.getElementById('reject-submit-btn');
+    
+    // Empêcher les soumissions multiples
+    if (btn.disabled) return;
+    
     setButtonLoading(btn, true);
+    btn.disabled = true;
+    
     try {
       await rejectRequest(pendingRequest.$id, reason);
       closeModal('reject-modal');
       showToast(`Demande de ${pendingRequest.name} refusée.`, 'warning');
       await loadRequests();
-    } finally { setButtonLoading(btn, false); }
+    } finally { 
+      setButtonLoading(btn, false);
+      btn.disabled = false;
+    }
   };
 
   window.removeRequest = (id) => {
