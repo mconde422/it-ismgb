@@ -11,12 +11,18 @@
   <link rel="stylesheet" href="css/forms.css" />
   <link rel="stylesheet" href="css/components.css" />
   <style>
-    body { overflow: hidden; }
+    body { overflow: auto; }
 
     .register-shell {
       display: grid;
-      grid-template-columns: 1fr 1fr;
       min-height: 100vh;
+    }
+
+    @media (min-width: 768px) {
+      body { overflow: hidden; }
+      .register-shell {
+        grid-template-columns: 1fr 1fr;
+      }
     }
 
     /* Left — Branding */
