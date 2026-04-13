@@ -3,7 +3,9 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#0D1117" />
   <title>IT-ISMGB — Mes Groupes</title>
+  <link rel="manifest" href="manifest.json" />
   <link rel="stylesheet" href="css/variables.css" />
   <link rel="stylesheet" href="css/base.css" />
   <link rel="stylesheet" href="css/layout.css" />
@@ -161,6 +163,7 @@
   import { hidePageLoader } from './js/ui.js';
   import { escapeHtml, stringToColor } from './js/utils.js';
   import { GROUP_EMOJIS, GROUP_COLORS } from './js/config.js';
+  import { initNotifications } from './js/notifications.js';
 
   window.toggleThemePage = toggleTheme;
   window.closeModal = closeModal;
@@ -178,6 +181,7 @@
     currentUser = await requireAuth();
     if (!currentUser) return;
     populateSidebarUser(currentUser);
+    initNotifications(currentUser).catch(() => {});
     buildEmojiPicker();
     buildColorPicker();
     await loadGroups();
@@ -319,6 +323,17 @@
   };
 
   init();
+</script>
+
+<script>
+  // Enregistrement du Service Worker pour PWA
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('./service-worker.js').then(registration => {
+      console.log('[PWA] Service Worker enregistré:', registration);
+    }).catch(error => {
+      console.warn('[PWA] Erreur lors de l\'enregistrement du Service Worker:', error);
+    });
+  }
 </script>
 </body>
 </html>

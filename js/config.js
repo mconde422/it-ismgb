@@ -12,9 +12,13 @@ export const COLLECTIONS = {
   SUBTASKS     : 'subtasks',
   COMMENTS     : 'comments',
   ACTIVITY_LOGS: 'activity_logs',
+  USER_REQUESTS: 'user_requests',
+  PROFILES     : 'profiles',
+  CATEGORIES   : 'categories',
 };
 
-export const STORAGE_BUCKET_ID = 'task_attachments';
+export const STORAGE_BUCKET_ID        = 'task_attachments';
+export const STORAGE_AVATARS_BUCKET_ID = 'avatars';
 
 // ---- Labels ----
 export const STATUS_LABELS = {

@@ -10,6 +10,13 @@ import {
   STATUS_LABELS, PRIORITY_LABELS, CATEGORY_LABELS,
 } from './config.js';
 
+// ---- Dynamic category registry (populated via setCategoriesMap) ----
+let _catMap = {};
+export function setCategoriesMap(categories) {
+  _catMap = {};
+  for (const c of categories) _catMap[c.slug] = c;
+}
+
 // ============================================
 // TOASTS
 // ============================================
@@ -184,6 +191,11 @@ export function hideLoader(elementId) {
 // ============================================
 
 export function renderCategoryBadge(category) {
+  const dynamic = _catMap[category];
+  if (dynamic) {
+    const style = `background:${dynamic.color}22;color:${dynamic.color};border-color:${dynamic.color}44`;
+    return `<span class="badge" style="${style}">${escapeHtml(dynamic.name)}</span>`;
+  }
   const label = CATEGORY_LABELS[category] || category;
   return `<span class="badge badge-cat-${category}">${escapeHtml(label)}</span>`;
 }
@@ -249,7 +261,7 @@ export function renderTaskCard(task, options = {}) {
           ${task.due_date
             ? `<div class="task-card-date ${overdue ? 'overdue' : ''}">
                 ${SVG_ICONS.calendar}
-                ${formatDate(task.due_date)}
+                ${formatDate(task.due_date)}${task.due_time ? ` à ${task.due_time}` : ''}
               </div>`
             : ''
           }

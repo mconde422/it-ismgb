@@ -3,7 +3,9 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>IT-ISMGB — Détail tâche</title>
+  <meta name="theme-color" content="#0D1117" />
+  <title>IT-ISMGB — Détail Tâche</title>
+  <link rel="manifest" href="manifest.json" />
   <link rel="stylesheet" href="css/variables.css" />
   <link rel="stylesheet" href="css/base.css" />
   <link rel="stylesheet" href="css/layout.css" />
@@ -237,16 +239,16 @@
           <div class="meta-item">
             <span class="meta-label">Catégorie</span>
             <select class="form-select" id="meta-category" onchange="updateMetaField('category',this.value)">
-              <option value="reseau">Réseau</option>
-              <option value="materiel">Matériel</option>
-              <option value="logiciel">Logiciel</option>
-              <option value="maintenance">Maintenance</option>
-              <option value="graphisme">Graphisme</option>
+              <option value="">Chargement…</option>
             </select>
           </div>
           <div class="meta-item">
             <span class="meta-label">Date d'échéance</span>
             <input type="date" class="form-input" id="meta-due" onchange="updateMetaField('due_date',this.value||null)" />
+          </div>
+          <div class="meta-item">
+            <span class="meta-label">Heure d'échéance</span>
+            <input type="time" class="form-input" id="meta-due-time" onchange="updateMetaField('due_time',this.value||null)" />
           </div>
           <div class="meta-item">
             <span class="meta-label">Assigné à</span>
@@ -279,13 +281,15 @@
 <script type="module">
   import { initTheme, toggleTheme } from './js/theme.js';
   import { requireAuth, populateSidebarUser, isAdmin, initLogoutBtn } from './js/auth.js';
-  import { initSidebar, showToast, openModal, closeModal, renderActivityLog, confirmDialog, renderMemberAvatar } from './js/ui.js';
+  import { initSidebar, showToast, openModal, closeModal, renderActivityLog, confirmDialog, renderMemberAvatar, setCategoriesMap } from './js/ui.js';
   import { getTaskById, updateTask, deleteTask, getSubtasks, createSubtask, toggleSubtask, deleteSubtask, changeTaskStatus } from './js/tasks.js';
   import { getComments, addComment, deleteComment } from './js/comments.js';
   import { getTaskActivity, logActivity } from './js/activity.js';
   import { subscribeToComments, subscribeToSubtasks, unsubscribeAll } from './js/realtime.js';
   import { hidePageLoader } from './js/ui.js';
   import { formatDate, formatDateTime, formatRelative, getInitials, stringToColor, getUrlParam, escapeHtml, isOverdue } from './js/utils.js';
+  import { getCategories } from './js/categories.js';
+  import { initNotifications } from './js/notifications.js';
 
   window.toggleThemePage = toggleTheme;
 
@@ -306,6 +310,15 @@
     currentUser = await requireAuth();
     if (!currentUser) return;
     populateSidebarUser(currentUser);
+    initNotifications(currentUser).catch(() => {});
+
+    // Load dynamic categories
+    const categories = await getCategories().catch(() => []);
+    setCategoriesMap(categories);
+    const catSel = document.getElementById('meta-category');
+    catSel.innerHTML = categories.map(c =>
+      `<option value="${escapeHtml(c.slug)}">${escapeHtml(c.name)}</option>`
+    ).join('') || '<option value="">Aucune catégorie</option>';
 
     await loadTask();
     await Promise.all([loadSubtasks(), loadComments(), loadActivity()]);
@@ -341,8 +354,9 @@
     // Meta panel
     document.getElementById('meta-status').value   = task.status;
     document.getElementById('meta-priority').value = task.priority;
-    document.getElementById('meta-category').value = task.category;
+    document.getElementById('meta-category').value = task.category || '';
     if (task.due_date) document.getElementById('meta-due').value = task.due_date.slice(0,10);
+    if (task.due_time) document.getElementById('meta-due-time').value = task.due_time;
     document.getElementById('meta-assignee').textContent = task.assignee_name || 'Non assigné';
     document.getElementById('meta-creator').textContent  = task.creator_id === currentUser.$id ? 'Vous' : task.creator_id.slice(0,12);
     document.getElementById('meta-created').textContent  = formatDate(task.created_at);
@@ -571,6 +585,17 @@
 
   window.addEventListener('unload', unsubscribeAll);
   init();
+</script>
+
+<script>
+  // Enregistrement du Service Worker pour PWA
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('./service-worker.js').then(registration => {
+      console.log('[PWA] Service Worker enregistré:', registration);
+    }).catch(error => {
+      console.warn('[PWA] Erreur lors de l\'enregistrement du Service Worker:', error);
+    });
+  }
 </script>
 </body>
 </html>

@@ -3,7 +3,9 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#0D1117" />
   <title>IT-ISMGB — Recherche</title>
+  <link rel="manifest" href="manifest.json" />
   <link rel="stylesheet" href="css/variables.css" />
   <link rel="stylesheet" href="css/base.css" />
   <link rel="stylesheet" href="css/layout.css" />
@@ -123,11 +125,6 @@
         </select>
         <select id="f-category" onchange="doSearch()">
           <option value="">Toutes catégories</option>
-          <option value="reseau">Réseau</option>
-          <option value="materiel">Matériel</option>
-          <option value="logiciel">Logiciel</option>
-          <option value="maintenance">Maintenance</option>
-          <option value="graphisme">Graphisme</option>
         </select>
       </div>
 
@@ -141,10 +138,12 @@
 <script type="module">
   import { initTheme, toggleTheme } from './js/theme.js';
   import { requireAuth, populateSidebarUser, initLogoutBtn } from './js/auth.js';
-  import { initSidebar, showToast, renderTaskCard, renderCategoryBadge, renderStatusBadge } from './js/ui.js';
+  import { initSidebar, showToast, renderTaskCard, renderCategoryBadge, renderStatusBadge, setCategoriesMap } from './js/ui.js';
   import { globalSearch } from './js/search.js';
   import { hidePageLoader } from './js/ui.js';
   import { debounce, escapeHtml, highlight, getUrlParam, setUrlParam } from './js/utils.js';
+  import { getCategories } from './js/categories.js';
+  import { initNotifications } from './js/notifications.js';
 
   window.toggleThemePage = toggleTheme;
 
@@ -157,6 +156,19 @@
     currentUser = await requireAuth();
     if (!currentUser) return;
     populateSidebarUser(currentUser);
+    initNotifications(currentUser).catch(() => {});
+
+    // Populate dynamic categories in filter
+    const categories = await getCategories().catch(() => []);
+    setCategoriesMap(categories);
+    const catSel = document.getElementById('f-category');
+    categories.forEach(c => {
+      const opt = document.createElement('option');
+      opt.value = c.slug;
+      opt.textContent = c.name;
+      catSel.appendChild(opt);
+    });
+
     hidePageLoader();
 
     const q = getUrlParam('q');
@@ -253,6 +265,17 @@
   }
 
   init();
+</script>
+
+<script>
+  // Enregistrement du Service Worker pour PWA
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('./service-worker.js').then(registration => {
+      console.log('[PWA] Service Worker enregistré:', registration);
+    }).catch(error => {
+      console.warn('[PWA] Erreur lors de l\'enregistrement du Service Worker:', error);
+    });
+  }
 </script>
 </body>
 </html>

@@ -5,6 +5,7 @@
 import { account } from './appwrite.js';
 import { showToast } from './ui.js';
 import { getInitials, stringToColor } from './utils.js';
+import { upsertProfile } from './profiles.js';
 
 let _currentUser = null;
 
@@ -48,6 +49,8 @@ export async function requireAuth() {
     window.location.href = 'index.html';
     return null;
   }
+  // Fire-and-forget: keep profile in sync
+  upsertProfile(user).catch(() => {});
   return user;
 }
 

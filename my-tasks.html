@@ -3,13 +3,20 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#0D1117" />
   <title>IT-ISMGB — Mes Tâches</title>
+  <link rel="manifest" href="manifest.json" />
   <link rel="stylesheet" href="css/variables.css" />
   <link rel="stylesheet" href="css/base.css" />
   <link rel="stylesheet" href="css/layout.css" />
   <link rel="stylesheet" href="css/components.css" />
   <link rel="stylesheet" href="css/forms.css" />
   <link rel="stylesheet" href="css/kanban.css" />
+  <style>
+    .due-datetime-row { display:flex; gap:0.5rem; }
+    .due-datetime-row .form-input { flex:1; }
+    .due-time-input { width:110px !important; flex:0 0 110px !important; }
+  </style>
 </head>
 <body>
 
@@ -135,11 +142,6 @@
         </select>
         <select id="filter-category" onchange="applyFilters()">
           <option value="">Toutes catégories</option>
-          <option value="reseau">Réseau</option>
-          <option value="materiel">Matériel</option>
-          <option value="logiciel">Logiciel</option>
-          <option value="maintenance">Maintenance</option>
-          <option value="graphisme">Graphisme</option>
         </select>
         <select id="filter-sort" onchange="applyFilters()">
           <option value="created_at">Date création</option>
@@ -197,11 +199,6 @@
             <label class="form-label" for="task-category">Catégorie <span class="required">*</span></label>
             <select id="task-category" class="form-select" required>
               <option value="">Choisir…</option>
-              <option value="reseau">Réseau</option>
-              <option value="materiel">Matériel</option>
-              <option value="logiciel">Logiciel</option>
-              <option value="maintenance">Maintenance</option>
-              <option value="graphisme">Graphisme</option>
             </select>
           </div>
           <div class="form-group">
@@ -226,7 +223,10 @@
           </div>
           <div class="form-group">
             <label class="form-label" for="task-due">Date d'échéance</label>
-            <input type="date" id="task-due" class="form-input" />
+            <div class="due-datetime-row">
+              <input type="date" id="task-due" class="form-input" />
+              <input type="time" id="task-due-time" class="form-input due-time-input" placeholder="HH:MM" title="Heure d'échéance" aria-label="Heure d'échéance" />
+            </div>
           </div>
         </div>
         <div class="form-group">
@@ -237,8 +237,8 @@
       </form>
     </div>
     <div class="modal-footer">
-      <button class="btn btn-secondary" onclick="closeTaskModal()">Annuler</button>
-      <button class="btn btn-primary" id="task-submit-btn" data-loading-text="Enregistrement…" onclick="submitTask()">
+      <button type="button" class="btn btn-secondary" onclick="closeTaskModal()">Annuler</button>
+      <button type="button" class="btn btn-primary" id="task-submit-btn" data-loading-text="Enregistrement…" onclick="submitTask()">
         Créer la tâche
       </button>
     </div>
@@ -249,17 +249,19 @@
 <script type="module">
   import { initTheme, toggleTheme } from './js/theme.js';
   import { requireAuth, populateSidebarUser, initLogoutBtn } from './js/auth.js';
-  import { initSidebar, initHeaderSearch, showToast, openModal, closeModal, renderTaskCard, renderKanbanBoard, renderEmptyState, confirmDialog, setButtonLoading, validateForm } from './js/ui.js';
+  import { initSidebar, initHeaderSearch, showToast, openModal, closeModal, renderTaskCard, renderKanbanBoard, renderEmptyState, confirmDialog, setButtonLoading, validateForm, setCategoriesMap } from './js/ui.js';
   import { getMyTasks, createTask, updateTask, deleteTask, changeTaskStatus } from './js/tasks.js';
+  import { getCategories, populateCategorySelect, createCategory } from './js/categories.js';
+  import { initNotifications } from './js/notifications.js';
   import { filterTasks, sortTasks } from './js/search.js';
   import { hidePageLoader } from './js/ui.js';
-  import { isOverdue } from './js/utils.js';
 
   window.toggleThemePage = toggleTheme;
 
-  let currentUser = null;
-  let allTasks    = [];
-  let currentView = 'list';
+  let currentUser   = null;
+  let allTasks      = [];
+  let allCategories = [];
+  let currentView   = 'list';
 
   async function init() {
     initTheme();
@@ -271,15 +273,34 @@
     if (!currentUser) return;
 
     populateSidebarUser(currentUser);
+
+    // Load categories before tasks so filters/form are ready
+    allCategories = await getCategories();
+    setCategoriesMap(allCategories);
+    populateFilterCategory();
+    populateCategorySelect(document.getElementById('task-category'), allCategories, '', true);
+
     await loadTasks();
+    initNotifications(currentUser);
     hidePageLoader();
+  }
+
+  function populateFilterCategory() {
+    const sel = document.getElementById('filter-category');
+    sel.innerHTML = '<option value="">Toutes catégories</option>';
+    allCategories.forEach(c => {
+      const opt = document.createElement('option');
+      opt.value = c.slug;
+      opt.textContent = c.name;
+      sel.appendChild(opt);
+    });
   }
 
   async function loadTasks() {
     try {
       allTasks = await getMyTasks(currentUser.$id);
       renderAll();
-    } catch (err) {
+    } catch {
       showToast('Erreur lors du chargement des tâches', 'error');
     }
   }
@@ -290,14 +311,13 @@
       priority: document.getElementById('filter-priority').value,
       category: document.getElementById('filter-category').value,
     };
-    const sortBy  = document.getElementById('filter-sort').value;
-    const sorted  = sortTasks(filterTasks(allTasks, filters), sortBy);
+    const sortBy = document.getElementById('filter-sort').value;
+    const sorted = sortTasks(filterTasks(allTasks, filters), sortBy);
 
-    // KPI
-    document.getElementById('kpi-todo').textContent       = allTasks.filter(t=>t.status==='todo').length;
-    document.getElementById('kpi-in-progress').textContent= allTasks.filter(t=>t.status==='in_progress').length;
-    document.getElementById('kpi-blocked').textContent    = allTasks.filter(t=>t.status==='blocked').length;
-    document.getElementById('kpi-done').textContent       = allTasks.filter(t=>t.status==='done').length;
+    document.getElementById('kpi-todo').textContent        = allTasks.filter(t => t.status === 'todo').length;
+    document.getElementById('kpi-in-progress').textContent = allTasks.filter(t => t.status === 'in_progress').length;
+    document.getElementById('kpi-blocked').textContent     = allTasks.filter(t => t.status === 'blocked').length;
+    document.getElementById('kpi-done').textContent        = allTasks.filter(t => t.status === 'done').length;
 
     if (currentView === 'list') renderListView(sorted);
     else renderKanbanView(sorted);
@@ -330,7 +350,22 @@
     });
   }
 
-  // ---- View switch ----
+  // ---- Handle "create new category" option in select ----
+  document.getElementById('task-category').addEventListener('change', async e => {
+    if (e.target.value !== '__new__') return;
+    e.target.value = '';
+    const name = prompt('Nom de la nouvelle catégorie :');
+    if (!name?.trim()) return;
+    try {
+      await createCategory(name.trim(), '#58A6FF', currentUser.$id);
+      allCategories = await getCategories(true);
+      setCategoriesMap(allCategories);
+      populateCategorySelect(document.getElementById('task-category'), allCategories, name.trim().toLowerCase().replace(/\s+/g,'_'), true);
+      populateFilterCategory();
+      showToast(`Catégorie "${name}" créée`, 'success');
+    } catch { showToast('Erreur lors de la création', 'error'); }
+  });
+
   window.switchView = (view) => {
     currentView = view;
     document.getElementById('tasks-list-view').style.display   = view === 'list'   ? '' : 'none';
@@ -340,44 +375,39 @@
     renderAll();
   };
 
-  // ---- Filters ----
   window.applyFilters = renderAll;
 
-  // ---- Modal: open new task ----
   window.openNewTaskModal = () => {
     document.getElementById('task-id-field').value = '';
     document.getElementById('task-form').reset();
     document.getElementById('task-modal-title').textContent = 'Nouvelle tâche';
     document.getElementById('task-submit-btn').textContent  = 'Créer la tâche';
+    populateCategorySelect(document.getElementById('task-category'), allCategories, '', true);
     openModal('task-modal');
   };
 
   window.closeTaskModal = () => closeModal('task-modal');
 
-  // ---- Edit task ----
   window.editTask = (taskId) => {
     const task = allTasks.find(t => t.$id === taskId);
     if (!task) return;
-
     document.getElementById('task-id-field').value = taskId;
     document.getElementById('task-title').value    = task.title;
     document.getElementById('task-desc').value     = task.description || '';
-    document.getElementById('task-category').value = task.category;
     document.getElementById('task-priority').value = task.priority;
     document.getElementById('task-status').value   = task.status;
     document.getElementById('task-tags').value     = (task.tags || []).join(', ');
-    if (task.due_date) document.getElementById('task-due').value = task.due_date.slice(0,10);
-
+    if (task.due_date) document.getElementById('task-due').value = task.due_date.slice(0, 10);
+    if (task.due_time) document.getElementById('task-due-time').value = task.due_time;
+    populateCategorySelect(document.getElementById('task-category'), allCategories, task.category, true);
     document.getElementById('task-modal-title').textContent = 'Modifier la tâche';
     document.getElementById('task-submit-btn').textContent  = 'Enregistrer';
     openModal('task-modal');
   };
 
-  // ---- Submit (create or update) ----
   window.submitTask = async () => {
     const form = document.getElementById('task-form');
     if (!validateForm(form)) return;
-
     const btn    = document.getElementById('task-submit-btn');
     const taskId = document.getElementById('task-id-field').value;
     const data   = {
@@ -388,9 +418,9 @@
       status     : document.getElementById('task-status').value,
       visibility : 'private',
       due_date   : document.getElementById('task-due').value || null,
-      tags       : document.getElementById('task-tags').value.split(',').map(t=>t.trim()).filter(Boolean),
+      due_time   : document.getElementById('task-due-time').value || null,
+      tags       : document.getElementById('task-tags').value.split(',').map(t => t.trim()).filter(Boolean),
     };
-
     setButtonLoading(btn, true);
     try {
       if (taskId) {
@@ -409,30 +439,34 @@
     }
   };
 
-  // ---- Delete ----
   window.deleteTaskUI = (taskId, taskTitle) => {
-    confirmDialog(
-      `Supprimer la tâche "${taskTitle}" ? Cette action est irréversible.`,
-      async () => {
-        try {
-          await deleteTask(taskId, currentUser);
-          allTasks = allTasks.filter(t => t.$id !== taskId);
-          renderAll();
-          showToast('Tâche supprimée', 'success');
-        } catch {
-          showToast('Erreur lors de la suppression', 'error');
-        }
-      }
-    );
+    confirmDialog(`Supprimer la tâche "${taskTitle}" ? Cette action est irréversible.`, async () => {
+      try {
+        await deleteTask(taskId, currentUser);
+        allTasks = allTasks.filter(t => t.$id !== taskId);
+        renderAll();
+        showToast('Tâche supprimée', 'success');
+      } catch { showToast('Erreur lors de la suppression', 'error'); }
+    });
   };
 
-  // ---- Quick add from kanban ----
   window.quickAddTask = (status) => {
+    window.openNewTaskModal();
     document.getElementById('task-status').value = status;
-    openNewTaskModal();
   };
 
   init();
+</script>
+
+<script>
+  // Enregistrement du Service Worker pour PWA
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('./service-worker.js').then(registration => {
+      console.log('[PWA] Service Worker enregistré:', registration);
+    }).catch(error => {
+      console.warn('[PWA] Erreur lors de l\'enregistrement du Service Worker:', error);
+    });
+  }
 </script>
 
 </body>

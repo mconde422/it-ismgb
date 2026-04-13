@@ -25,6 +25,7 @@ export async function createTask(taskData, user) {
       assignee_id : taskData.assignee_id || null,
       assignee_name: taskData.assignee_name || null,
       due_date    : taskData.due_date || null,
+      due_time    : taskData.due_time || null,
       tags        : taskData.tags || [],
       attachments : [],
       created_at  : now,

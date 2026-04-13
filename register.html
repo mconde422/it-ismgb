@@ -1,0 +1,597 @@
+<!DOCTYPE html>
+<html lang="fr" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#0D1117" />
+  <title>IT-ISMGB — Demande d'accès</title>
+  <link rel="manifest" href="manifest.json" />
+  <link rel="stylesheet" href="css/variables.css" />
+  <link rel="stylesheet" href="css/base.css" />
+  <link rel="stylesheet" href="css/forms.css" />
+  <link rel="stylesheet" href="css/components.css" />
+  <style>
+    body { overflow: hidden; }
+
+    .register-shell {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      min-height: 100vh;
+    }
+
+    /* Left — Branding */
+    .reg-brand {
+      background: linear-gradient(135deg, #0D1117 0%, #161B22 60%, #1a2332 100%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 3rem;
+      position: relative;
+      overflow: hidden;
+      border-right: 1px solid var(--border-default);
+    }
+
+    .reg-brand::before {
+      content: '';
+      position: absolute;
+      top: -200px; left: -200px;
+      width: 600px; height: 600px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(47,129,247,0.12) 0%, transparent 70%);
+      pointer-events: none;
+    }
+
+    .reg-brand::after {
+      content: '';
+      position: absolute;
+      bottom: -150px; right: -100px;
+      width: 400px; height: 400px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(63,185,80,0.08) 0%, transparent 70%);
+      pointer-events: none;
+    }
+
+    .brand-logo {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      margin-bottom: 2.5rem;
+      z-index: 1;
+    }
+
+    .brand-logo-icon {
+      width: 56px; height: 56px;
+      background: var(--accent-primary);
+      border-radius: var(--radius-md);
+      display: flex; align-items: center; justify-content: center;
+      box-shadow: 0 0 30px rgba(47,129,247,0.4);
+    }
+    .brand-logo-icon svg { width: 30px; height: 30px; fill: #fff; }
+    .brand-title    { font-size: var(--text-3xl); font-weight: 800; color: var(--text-primary); letter-spacing: -0.02em; }
+    .brand-subtitle { font-size: var(--text-sm); color: var(--text-secondary); margin-top: 0.1rem; }
+
+    .brand-tagline { text-align: center; z-index: 1; margin-bottom: 3rem; }
+    .brand-tagline h2 { font-size: var(--text-2xl); font-weight: 700; color: var(--text-primary); line-height: 1.3; margin-bottom: 0.75rem; }
+    .brand-tagline p  { font-size: var(--text-sm); color: var(--text-secondary); max-width: 340px; line-height: 1.7; }
+
+    .process-steps { display: flex; flex-direction: column; gap: 1.25rem; z-index: 1; width: 100%; max-width: 340px; }
+    .process-step  { display: flex; align-items: flex-start; gap: 1rem; }
+
+    .step-num {
+      width: 28px; height: 28px; border-radius: 50%;
+      background: var(--accent-primary); color: #fff;
+      font-size: var(--text-xs); font-weight: 700;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0; margin-top: 1px;
+    }
+
+    .step-info { font-size: var(--text-sm); }
+    .step-title { color: var(--text-primary); font-weight: 600; }
+    .step-desc  { color: var(--text-secondary); font-size: var(--text-xs); margin-top: 0.15rem; }
+
+    /* Right — Form side */
+    .reg-form-side {
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      padding: 3rem;
+      background: var(--bg-primary);
+      position: relative;
+    }
+
+    .reg-theme-toggle { position: absolute; top: 1.5rem; right: 1.5rem; }
+
+    .reg-box { width: 100%; max-width: 420px; }
+
+    .reg-header { margin-bottom: 1.75rem; }
+    .reg-header h1 { font-size: var(--text-2xl); font-weight: 700; margin-bottom: 0.375rem; }
+    .reg-header p  { font-size: var(--text-sm); color: var(--text-secondary); }
+
+    /* Mode tabs */
+    .reg-tabs {
+      display: flex; gap: 0; margin-bottom: 1.75rem;
+      background: var(--bg-secondary); border-radius: var(--radius-md); padding: 4px;
+    }
+    .reg-tab {
+      flex: 1; padding: 0.5rem; border: none; border-radius: var(--radius-sm);
+      background: transparent; color: var(--text-secondary);
+      font-size: var(--text-sm); font-weight: 500; cursor: pointer;
+      transition: background 0.15s, color 0.15s;
+    }
+    .reg-tab.active {
+      background: var(--bg-primary); color: var(--text-primary);
+      box-shadow: 0 1px 4px rgba(0,0,0,0.3);
+    }
+
+    .reg-panel { display: none; }
+    .reg-panel.active { display: block; }
+
+    .reg-form { display: flex; flex-direction: column; gap: 1rem; }
+
+    .alert-box {
+      padding: 0.75rem 1rem; border-radius: var(--radius-sm);
+      font-size: var(--text-sm); display: none;
+    }
+    .alert-box.visible { display: block; }
+    .alert-error   { background: rgba(248,81,73,0.1); border: 1px solid rgba(248,81,73,0.3); color: var(--accent-danger); }
+    .alert-success { background: rgba(63,185,80,0.1); border: 1px solid rgba(63,185,80,0.3); color: var(--accent-success); }
+    .alert-info    { background: rgba(47,129,247,0.1); border: 1px solid rgba(47,129,247,0.3); color: var(--accent-primary); }
+
+    .reg-footer { margin-top: 1.5rem; text-align: center; font-size: var(--text-xs); color: var(--text-muted); }
+
+    /* Avatar upload zone */
+    .avatar-upload-zone {
+      border: 2px dashed var(--border-default);
+      border-radius: var(--radius-md);
+      padding: 1rem;
+      cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      min-height: 80px; transition: border-color 0.2s, background 0.2s;
+    }
+    .avatar-upload-zone:hover { border-color: var(--accent-primary); background: rgba(47,129,247,0.05); }
+    .avatar-upload-preview {
+      display: flex; flex-direction: column; align-items: center;
+      gap: 0.4rem; color: var(--text-muted); font-size: var(--text-xs);
+    }
+    .avatar-img-preview {
+      width: 72px; height: 72px; border-radius: 50%; object-fit: cover; display: none;
+    }
+
+    /* Status card */
+    .status-card {
+      background: var(--bg-secondary); border: 1px solid var(--border-default);
+      border-radius: var(--radius-md); padding: 1.25rem; display: none;
+    }
+    .status-card.visible { display: block; }
+    .status-top { display: flex; align-items: center; gap: 0.75rem; margin-bottom: 1rem; }
+    .status-avatar {
+      width: 44px; height: 44px; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-weight: 700; font-size: 1rem; flex-shrink: 0;
+    }
+    .status-name  { font-weight: 600; color: var(--text-primary); }
+    .status-email { font-size: var(--text-xs); color: var(--text-secondary); }
+    .status-row   { display: flex; justify-content: space-between; align-items: center; padding: 0.5rem 0; border-top: 1px solid var(--border-muted); font-size: var(--text-sm); }
+    .status-row-label { color: var(--text-secondary); }
+    .status-message-box {
+      background: var(--bg-tertiary); border-radius: var(--radius-sm);
+      padding: 0.75rem; font-size: var(--text-sm); color: var(--text-secondary);
+      margin-top: 0.75rem; font-style: italic;
+    }
+
+    /* Light mode */
+    :root[data-theme="light"] .reg-brand {
+      background: linear-gradient(135deg, #F6F8FA 0%, #EAEEF2 60%, #dde4ed 100%);
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      body { overflow: auto; }
+      .register-shell { grid-template-columns: 1fr; }
+      .reg-brand { display: none; }
+      .reg-form-side { min-height: 100vh; padding: 2rem 1.5rem; }
+    }
+  </style>
+</head>
+<body>
+
+<div id="toast-container" class="toast-container"></div>
+
+<div class="register-shell">
+  <!-- Left: Branding -->
+  <div class="reg-brand">
+    <div class="brand-logo">
+      <div class="brand-logo-icon">
+        <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+          <path d="M20 3H4a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h16a1 1 0 0 0 1-1V4a1 1 0 0 0-1-1zm-1 12H5V5h14v10zm-2 4H7v2h10v-2z"/>
+        </svg>
+      </div>
+      <div>
+        <div class="brand-title">IT-ISMGB</div>
+        <div class="brand-subtitle">Service Informatique</div>
+      </div>
+    </div>
+
+    <div class="brand-tagline">
+      <h2>Comment ça fonctionne ?</h2>
+      <p>Votre demande d'accès sera examinée par l'administrateur du service informatique.</p>
+    </div>
+
+    <div class="process-steps">
+      <div class="process-step">
+        <div class="step-num">1</div>
+        <div class="step-info">
+          <div class="step-title">Remplissez le formulaire</div>
+          <div class="step-desc">Indiquez votre nom, email et département. Ajoutez un message si besoin.</div>
+        </div>
+      </div>
+      <div class="process-step">
+        <div class="step-num">2</div>
+        <div class="step-info">
+          <div class="step-title">Demande en attente</div>
+          <div class="step-desc">L'administrateur reçoit votre demande et l'examine dans les plus brefs délais.</div>
+        </div>
+      </div>
+      <div class="process-step">
+        <div class="step-num">3</div>
+        <div class="step-info">
+          <div class="step-title">Validation et accès</div>
+          <div class="step-desc">Si approuvée, un compte est créé. L'administrateur vous communique vos identifiants.</div>
+        </div>
+      </div>
+      <div class="process-step">
+        <div class="step-num">4</div>
+        <div class="step-info">
+          <div class="step-title">Suivez votre demande</div>
+          <div class="step-desc">Vérifiez l'état de votre demande à tout moment avec votre email.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Right: Form -->
+  <div class="reg-form-side">
+    <!-- Theme Toggle -->
+    <div class="reg-theme-toggle">
+      <button class="btn btn-secondary btn-icon" onclick="toggleThemeReg()" title="Changer le thème">
+        <span data-theme-icon="sun">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+        </span>
+        <span data-theme-icon="moon" style="display:none">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+        </span>
+      </button>
+    </div>
+
+    <div class="reg-box">
+      <div class="reg-header">
+        <h1>Demande d'accès</h1>
+        <p>Remplissez ce formulaire pour rejoindre IT-ISMGB</p>
+      </div>
+
+      <!-- Mode Tabs -->
+      <div class="reg-tabs">
+        <button type="button" class="reg-tab active" id="tab-request-btn" onclick="switchRegTab('request')">
+          Nouvelle demande
+        </button>
+        <button type="button" class="reg-tab" id="tab-status-btn" onclick="switchRegTab('status')">
+          Suivre ma demande
+        </button>
+      </div>
+
+      <!-- Panel: New Request -->
+      <div class="reg-panel active" id="panel-request">
+        <div id="req-error" class="alert-box alert-error"></div>
+        <div id="req-success" class="alert-box alert-success"></div>
+
+        <form class="reg-form" id="request-form" novalidate>
+          <div class="form-group">
+            <label class="form-label" for="req-name">Nom complet <span class="required">*</span></label>
+            <div class="input-group">
+              <div class="input-icon">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+              </div>
+              <input type="text" id="req-name" class="form-input" placeholder="Ex : Jean Dupont" required autocomplete="name" />
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="req-email">Adresse email <span class="required">*</span></label>
+            <div class="input-group">
+              <div class="input-icon">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+              </div>
+              <input type="email" id="req-email" class="form-input" placeholder="prenom.nom@ismgb.edu" required autocomplete="email" />
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="req-dept">Département / Service <span class="required">*</span></label>
+            <select id="req-dept" class="form-select" required>
+              <option value="">-- Sélectionner --</option>
+              <option value="Informatique">Service Informatique</option>
+              <option value="Administration">Administration</option>
+              <option value="Pédagogie">Pédagogie</option>
+              <option value="Finances">Finances</option>
+              <option value="Communication">Communication</option>
+              <option value="Bibliothèque">Bibliothèque</option>
+              <option value="Étudiant">Étudiant</option>
+              <option value="Autre">Autre</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="req-message">Motif de la demande</label>
+            <textarea id="req-message" class="form-input" rows="3"
+              placeholder="Expliquez brièvement pourquoi vous avez besoin d'accéder à IT-ISMGB…"
+              style="resize:vertical;min-height:80px"></textarea>
+          </div>
+
+          <!-- Photo de profil -->
+          <div class="form-group">
+            <label class="form-label">Photo de profil <span style="color:var(--text-muted);font-weight:400">(optionnel)</span></label>
+            <div class="avatar-upload-zone" id="avatar-zone" onclick="document.getElementById('req-avatar').click()">
+              <div class="avatar-upload-preview" id="avatar-preview">
+                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                <span>Cliquer pour ajouter une photo</span>
+              </div>
+              <img id="avatar-img-preview" class="avatar-img-preview" src="" alt="Aperçu" />
+            </div>
+            <input type="file" id="req-avatar" accept="image/jpeg,image/png,image/webp,image/gif" style="display:none" />
+            <span class="form-hint">JPG, PNG ou WebP — max 2 Mo</span>
+          </div>
+
+          <button type="submit" class="btn btn-primary" id="req-submit-btn" style="width:100%;height:44px;font-size:var(--text-base)" data-loading-text="Envoi en cours…">
+            Envoyer ma demande
+          </button>
+        </form>
+
+        <p style="margin-top:1.25rem;text-align:center;font-size:var(--text-sm);color:var(--text-secondary)">
+          Vous avez déjà un compte ?
+          <a href="index.html" style="color:var(--accent-primary);font-weight:500">Se connecter</a>
+        </p>
+      </div>
+
+      <!-- Panel: Check Status -->
+      <div class="reg-panel" id="panel-status">
+        <div id="status-error" class="alert-box alert-error"></div>
+
+        <form class="reg-form" id="status-form" novalidate>
+          <div class="form-group">
+            <label class="form-label" for="status-email">Votre adresse email</label>
+            <div class="input-group">
+              <div class="input-icon">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+              </div>
+              <input type="email" id="status-email" class="form-input" placeholder="prenom.nom@ismgb.edu" required />
+            </div>
+          </div>
+          <button type="submit" class="btn btn-secondary" id="status-btn" style="width:100%;height:44px" data-loading-text="Recherche…">
+            Vérifier le statut
+          </button>
+        </form>
+
+        <!-- Status result card -->
+        <div class="status-card" id="status-card">
+          <div class="status-top">
+            <div class="status-avatar" id="sc-avatar">?</div>
+            <div>
+              <div class="status-name"  id="sc-name">—</div>
+              <div class="status-email" id="sc-email">—</div>
+            </div>
+          </div>
+          <div class="status-row">
+            <span class="status-row-label">Statut</span>
+            <span id="sc-status-badge">—</span>
+          </div>
+          <div class="status-row">
+            <span class="status-row-label">Département</span>
+            <span id="sc-dept" class="text-sm">—</span>
+          </div>
+          <div class="status-row">
+            <span class="status-row-label">Demande envoyée</span>
+            <span id="sc-date" class="text-sm text-secondary">—</span>
+          </div>
+          <div id="sc-reject-reason-wrapper" style="display:none">
+            <div class="status-message-box" id="sc-reject-reason"></div>
+          </div>
+          <div id="sc-approved-info" style="display:none" class="alert-box alert-success visible mt-3" style="margin-top:0.75rem">
+            Votre compte a été créé. Contactez l'administrateur pour obtenir vos identifiants de connexion.
+          </div>
+        </div>
+
+        <p style="margin-top:1.25rem;text-align:center;font-size:var(--text-sm);color:var(--text-secondary)">
+          Vous avez déjà un compte ?
+          <a href="index.html" style="color:var(--accent-primary);font-weight:500">Se connecter</a>
+        </p>
+      </div>
+
+      <div class="reg-footer">
+        <p>Institut Supérieur de Management et de Gestion des Affaires de Bissau</p>
+        <p class="mt-1">© 2025 IT-ISMGB — Tous droits réservés</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Appwrite SDK -->
+<script src="https://cdn.jsdelivr.net/npm/appwrite@16/dist/iife/sdk.min.js"></script>
+
+<script type="module">
+  import { initTheme, toggleTheme } from './js/theme.js';
+  import { setButtonLoading }      from './js/ui.js';
+  import { submitRequest, checkRequestByEmail } from './js/requests.js';
+  import { redirectIfLoggedIn }    from './js/auth.js';
+  import { uploadAvatar }          from './js/profiles.js';
+  import { escapeHtml, formatDate, getInitials, stringToColor } from './js/utils.js';
+
+  window.toggleThemeReg = toggleTheme;
+
+  initTheme();
+  redirectIfLoggedIn('my-tasks.html');
+
+  // ---- Avatar preview ----
+  document.getElementById('req-avatar').addEventListener('change', e => {
+    const file = e.target.files[0];
+    if (!file) return;
+    if (file.size > 2 * 1024 * 1024) {
+      showAlert('req-error', 'La photo ne doit pas dépasser 2 Mo.');
+      e.target.value = '';
+      return;
+    }
+    const reader = new FileReader();
+    reader.onload = ev => {
+      const preview  = document.getElementById('avatar-preview');
+      const imgEl    = document.getElementById('avatar-img-preview');
+      imgEl.src      = ev.target.result;
+      imgEl.style.display = 'block';
+      preview.style.display = 'none';
+    };
+    reader.readAsDataURL(file);
+  });
+
+  // ---- Tab switch ----
+  window.switchRegTab = (tab) => {
+    document.querySelectorAll('.reg-tab').forEach(b => b.classList.remove('active'));
+    document.querySelectorAll('.reg-panel').forEach(p => p.classList.remove('active'));
+    document.getElementById(`tab-${tab}-btn`).classList.add('active');
+    document.getElementById(`panel-${tab}`).classList.add('active');
+  };
+
+  // ---- Helpers ----
+  function showAlert(id, msg) {
+    const el = document.getElementById(id);
+    if (!el) return;
+    el.textContent = msg;
+    el.classList.add('visible');
+  }
+  function hideAlert(id) {
+    const el = document.getElementById(id);
+    if (el) el.classList.remove('visible');
+  }
+
+  const STATUS_CONFIG = {
+    pending : { label: 'En attente',  badge: 'badge-member',  color: 'var(--accent-warning)' },
+    approved: { label: 'Approuvée',   badge: 'badge-active',  color: 'var(--accent-success)' },
+    rejected: { label: 'Refusée',     badge: 'badge-blocked', color: 'var(--accent-danger)'  },
+  };
+
+  // ---- Registration form ----
+  document.getElementById('request-form').addEventListener('submit', async e => {
+    e.preventDefault();
+    hideAlert('req-error');
+    hideAlert('req-success');
+
+    const name  = document.getElementById('req-name').value.trim();
+    const email = document.getElementById('req-email').value.trim();
+    const dept  = document.getElementById('req-dept').value;
+    const msg   = document.getElementById('req-message').value.trim();
+
+    if (!name)  { showAlert('req-error', 'Veuillez saisir votre nom complet.'); return; }
+    if (!email) { showAlert('req-error', "Veuillez saisir votre adresse email."); return; }
+    if (!dept)  { showAlert('req-error', 'Veuillez sélectionner votre département.'); return; }
+
+    const btn = document.getElementById('req-submit-btn');
+    setButtonLoading(btn, true);
+
+    try {
+      // Check if already submitted
+      const existing = await checkRequestByEmail(email);
+      if (existing) {
+        const cfg = STATUS_CONFIG[existing.status] || {};
+        showAlert('req-error', `Une demande existe déjà pour cet email (statut : ${cfg.label || existing.status}). Utilisez l'onglet "Suivre ma demande".`);
+        setButtonLoading(btn, false);
+        return;
+      }
+
+      // Upload avatar if selected
+      let avatarFileId = null;
+      const avatarFile = document.getElementById('req-avatar').files[0];
+      if (avatarFile) {
+        try { avatarFileId = await uploadAvatar(avatarFile); }
+        catch { /* Avatar upload failure is non-blocking */ }
+      }
+
+      await submitRequest({ name, email, department: dept, message: msg, avatar_file_id: avatarFileId });
+
+      // Show success
+      document.getElementById('request-form').reset();
+      showAlert('req-success', `Demande envoyée avec succès ! L'administrateur l'examinera prochainement. Gardez votre email (${email}) pour suivre l'état de votre demande.`);
+    } catch (err) {
+      const message = err?.message || 'Une erreur est survenue. Veuillez réessayer.';
+      showAlert('req-error', message);
+    } finally {
+      setButtonLoading(btn, false);
+    }
+  });
+
+  // ---- Status check form ----
+  document.getElementById('status-form').addEventListener('submit', async e => {
+    e.preventDefault();
+    hideAlert('status-error');
+
+    const email = document.getElementById('status-email').value.trim();
+    if (!email) { showAlert('status-error', 'Veuillez saisir votre adresse email.'); return; }
+
+    const btn = document.getElementById('status-btn');
+    setButtonLoading(btn, true);
+    document.getElementById('status-card').classList.remove('visible');
+
+    try {
+      const req = await checkRequestByEmail(email);
+      if (!req) {
+        showAlert('status-error', 'Aucune demande trouvée pour cet email. Utilisez l\'onglet "Nouvelle demande".');
+        setButtonLoading(btn, false);
+        return;
+      }
+
+      // Populate card
+      const cfg      = STATUS_CONFIG[req.status] || { label: req.status, badge: 'badge-member' };
+      const initials = getInitials(req.name);
+      const color    = stringToColor(req.email);
+
+      document.getElementById('sc-avatar').textContent  = initials;
+      document.getElementById('sc-avatar').style.background = color;
+      document.getElementById('sc-avatar').style.color      = '#fff';
+      document.getElementById('sc-name').textContent   = escapeHtml(req.name);
+      document.getElementById('sc-email').textContent  = escapeHtml(req.email);
+      document.getElementById('sc-dept').textContent   = req.department || '—';
+      document.getElementById('sc-date').textContent   = formatDate(req.created_at);
+      document.getElementById('sc-status-badge').innerHTML =
+        `<span class="badge ${cfg.badge}">${cfg.label}</span>`;
+
+      // Reject reason
+      const rejectWrapper = document.getElementById('sc-reject-reason-wrapper');
+      if (req.status === 'rejected' && req.reject_reason) {
+        document.getElementById('sc-reject-reason').textContent = `Motif : ${req.reject_reason}`;
+        rejectWrapper.style.display = 'block';
+      } else {
+        rejectWrapper.style.display = 'none';
+      }
+
+      // Approved info
+      document.getElementById('sc-approved-info').style.display =
+        req.status === 'approved' ? 'block' : 'none';
+
+      document.getElementById('status-card').classList.add('visible');
+    } catch (err) {
+      showAlert('status-error', 'Erreur lors de la vérification. Veuillez réessayer.');
+    } finally {
+      setButtonLoading(btn, false);
+    }
+  });
+</script>
+
+<script>
+  // Enregistrement du Service Worker pour PWA
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('./service-worker.js').then(registration => {
+      console.log('[PWA] Service Worker enregistré:', registration);
+    }).catch(error => {
+      console.warn('[PWA] Erreur lors de l\'enregistrement du Service Worker:', error);
+    });
+  }
+</script>
+
+</body>
+</html>

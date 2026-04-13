@@ -1,0 +1,81 @@
+{
+  "name": "IT-ISMGB — Gestionnaire de Tâches IT",
+  "short_name": "IT-ISMGB",
+  "description": "Plateforme de gestion de tâches collaborative pour le service informatique de l'ISMGB",
+  "start_url": "/index.html",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "theme_color": "#0D1117",
+  "background_color": "#0D1117",
+  "categories": ["productivity", "business"],
+  "screenshots": [
+    {
+      "src": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 540 720'><rect fill='%230D1117' width='540' height='720'/><text x='50%' y='50%' fill='%23FFFFFF' font-size='48' text-anchor='middle' dominant-baseline='middle'>IT-ISMGB</text></svg>",
+      "sizes": "540x720",
+      "type": "image/svg+xml",
+      "form_factor": "narrow"
+    },
+    {
+      "src": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1280 720'><rect fill='%230D1117' width='1280' height='720'/><text x='50%' y='50%' fill='%23FFFFFF' font-size='72' text-anchor='middle' dominant-baseline='middle'>IT-ISMGB</text></svg>",
+      "sizes": "1280x720",
+      "type": "image/svg+xml",
+      "form_factor": "wide"
+    }
+  ],
+  "icons": [
+    {
+      "src": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 192 192'><defs><linearGradient id='grad' x1='0%' y1='0%' x2='100%' y2='100%'><stop offset='0%' style='stop-color:%232f81f7;stop-opacity:1' /><stop offset='100%' style='stop-color:%233fb950;stop-opacity:1' /></linearGradient></defs><rect width='192' height='192' fill='url(%23grad)' rx='45'/><text x='96' y='96' font-size='96' font-weight='bold' fill='white' text-anchor='middle' dominant-baseline='middle'>IT</text></svg>",
+      "sizes": "192x192",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    },
+    {
+      "src": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 192 192'><defs><linearGradient id='grad' x1='0%' y1='0%' x2='100%' y2='100%'><stop offset='0%' style='stop-color:%232f81f7;stop-opacity:1' /><stop offset='100%' style='stop-color:%233fb950;stop-opacity:1' /></linearGradient></defs><rect width='192' height='192' fill='url(%23grad)' rx='45'/><text x='96' y='96' font-size='96' font-weight='bold' fill='white' text-anchor='middle' dominant-baseline='middle'>IT</text></svg>",
+      "sizes": "192x192",
+      "type": "image/svg+xml",
+      "purpose": "maskable"
+    },
+    {
+      "src": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'><defs><linearGradient id='grad' x1='0%' y1='0%' x2='100%' y2='100%'><stop offset='0%' style='stop-color:%232f81f7;stop-opacity:1' /><stop offset='100%' style='stop-color:%233fb950;stop-opacity:1' /></linearGradient></defs><rect width='512' height='512' fill='url(%23grad)' rx='120'/><text x='256' y='256' font-size='256' font-weight='bold' fill='white' text-anchor='middle' dominant-baseline='middle'>IT</text></svg>",
+      "sizes": "512x512",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    },
+    {
+      "src": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'><defs><linearGradient id='grad' x1='0%' y1='0%' x2='100%' y2='100%'><stop offset='0%' style='stop-color:%232f81f7;stop-opacity:1' /><stop offset='100%' style='stop-color:%233fb950;stop-opacity:1' /></linearGradient></defs><rect width='512' height='512' fill='url(%23grad)' rx='120'/><text x='256' y='256' font-size='256' font-weight='bold' fill='white' text-anchor='middle' dominant-baseline='middle'>IT</text></svg>",
+      "sizes": "512x512",
+      "type": "image/svg+xml",
+      "purpose": "maskable"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Mes Tâches",
+      "short_name": "Tâches",
+      "description": "Voir mes tâches personelles",
+      "url": "/my-tasks.html",
+      "icons": [
+        {
+          "src": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 96 96'><rect fill='%232f81f7' width='96' height='96'/><path fill='white' d='M20 40h56M20 52h56M20 64h40'/></svg>",
+          "sizes": "96x96",
+          "type": "image/svg+xml"
+        }
+      ]
+    },
+    {
+      "name": "Groupes",
+      "short_name": "Groupes",
+      "description": "Gérer les groupes de travail",
+      "url": "/groups.html",
+      "icons": [
+        {
+          "src": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 96 96'><rect fill='%233fb950' width='96' height='96'/><circle fill='white' cx='30' cy='30' r='10'/><circle fill='white' cx='66' cy='30' r='10'/><circle fill='white' cx='48' cy='50' r='10'/><path fill='white' d='M20 70 Q20 60 30 60 Q40 60 40 70M58 70 Q58 60 66 60 Q74 60 74 70'/></svg>",
+          "sizes": "96x96",
+          "type": "image/svg+xml"
+        }
+      ]
+    }
+  ],
+  "prefer_related_applications": false
+}

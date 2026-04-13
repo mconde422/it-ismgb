@@ -3,7 +3,9 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#0D1117" />
   <title>IT-ISMGB — Administration</title>
+  <link rel="manifest" href="manifest.json" />
   <link rel="stylesheet" href="css/variables.css" />
   <link rel="stylesheet" href="css/base.css" />
   <link rel="stylesheet" href="css/layout.css" />
@@ -44,11 +46,11 @@
 
   <div class="main-content">
     <header class="header">
-      <button class="sidebar-toggle" id="sidebar-toggle"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg></button>
+      <button type="button" class="sidebar-toggle" id="sidebar-toggle" title="Menu" aria-label="Menu"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg></button>
       <div class="header-breadcrumb"><span class="breadcrumb-item current">Administration</span></div>
       <div class="header-actions">
-        <button class="header-btn" onclick="toggleThemePage()"><span data-theme-icon="sun"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg></span><span data-theme-icon="moon" style="display:none"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg></span></button>
-        <div class="header-avatar" id="header-avatar">?</div>
+        <button type="button" class="header-btn" onclick="toggleThemePage()" title="Changer le thème" aria-label="Changer le thème"><span data-theme-icon="sun"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg></span><span data-theme-icon="moon" style="display:none"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg></span></button>
+        <div class="header-avatar" id="header-avatar" aria-label="Avatar utilisateur">?</div>
       </div>
     </header>
 
@@ -66,7 +68,12 @@
 
       <!-- Tabs -->
       <div class="tabs" id="admin-tabs">
-        <button class="tab-btn active" data-tab="members" onclick="switchTab('members')">
+        <button class="tab-btn active" data-tab="requests" onclick="switchTab('requests')">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 20V10"/><path d="M12 20V4"/><path d="M6 20v-6"/></svg>
+          Demandes d'accès
+          <span class="badge badge-admin" id="pending-badge" style="display:none;margin-left:4px">0</span>
+        </button>
+        <button class="tab-btn" data-tab="members" onclick="switchTab('members')">
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
           Membres
         </button>
@@ -74,10 +81,36 @@
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
           Groupes
         </button>
+        <button class="tab-btn" data-tab="categories" onclick="switchTab('categories')">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg>
+          Catégories
+        </button>
+      </div>
+
+      <!-- Tab Requests -->
+      <div id="tab-requests" class="tab-panel active">
+        <div class="table-wrapper">
+          <table class="table" id="requests-table">
+            <thead>
+              <tr>
+                <th>Demandeur</th>
+                <th>Email</th>
+                <th>Département</th>
+                <th>Motif</th>
+                <th>Statut</th>
+                <th>Date</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="requests-tbody">
+              <tr><td colspan="7" class="text-center text-secondary p-4"><div class="spinner spinner-sm" style="margin:0 auto"></div></td></tr>
+            </tbody>
+          </table>
+        </div>
       </div>
 
       <!-- Tab Members -->
-      <div id="tab-members" class="tab-panel active">
+      <div id="tab-members" class="tab-panel">
         <div class="card card-body mb-3" style="padding:0.75rem 1rem;display:flex;align-items:center;gap:0.75rem">
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
           <input type="search" class="form-input" id="member-search" placeholder="Rechercher un membre…" style="height:32px;background:var(--bg-tertiary)" oninput="filterMembers(this.value)" />
@@ -118,21 +151,37 @@
               </tr>
             </thead>
             <tbody id="groups-tbody">
-              <tr><td colspan="5" class="text-center text-secondary p-4"><div class="spinner spinner-sm" style="margin:0 auto"></div></td></tr>
+              <tr><td colspan="5" class="text-center text-secondary p-4"><div class="spinner spinner-sm"></div></td></tr>
             </tbody>
           </table>
+        </div>
+      </div>
+
+      <!-- Tab Categories -->
+      <div id="tab-categories" class="tab-panel">
+        <div class="page-header" style="margin-bottom:1rem">
+          <p class="text-secondary text-sm">Gérez les catégories disponibles dans les formulaires de tâche.</p>
+          <button type="button" class="btn btn-primary btn-sm" onclick="openNewCategoryModal()">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+            Nouvelle catégorie
+          </button>
+        </div>
+        <div id="categories-grid" class="categories-grid">
+          <div class="spinner spinner-sm"></div>
         </div>
       </div>
     </main>
   </div>
 </div>
 
+<!-- ===================== MODALS ===================== -->
+
 <!-- Modal: Créer utilisateur -->
 <div class="modal-backdrop" id="create-user-modal">
   <div class="modal modal-sm">
     <div class="modal-header">
       <h2 class="modal-title">Créer un compte</h2>
-      <button class="modal-close" onclick="closeModal('create-user-modal')">
+      <button type="button" class="modal-close" onclick="closeModal('create-user-modal')" title="Fermer" aria-label="Fermer">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
       </button>
     </div>
@@ -160,18 +209,139 @@
       </form>
     </div>
     <div class="modal-footer">
-      <button class="btn btn-secondary" onclick="closeModal('create-user-modal')">Annuler</button>
-      <button class="btn btn-primary" id="cu-submit-btn" data-loading-text="Création…" onclick="submitCreateUser()">Créer le compte</button>
+      <button type="button" class="btn btn-secondary" onclick="closeModal('create-user-modal')">Annuler</button>
+      <button type="button" class="btn btn-primary" id="cu-submit-btn" data-loading-text="Création…" onclick="submitCreateUser()">Créer le compte</button>
     </div>
   </div>
 </div>
+
+<!-- Modal: Approuver demande -->
+<div class="modal-backdrop" id="approve-modal">
+  <div class="modal modal-sm">
+    <div class="modal-header">
+      <h2 class="modal-title">Approuver la demande</h2>
+      <button type="button" class="modal-close" onclick="closeModal('approve-modal')" title="Fermer" aria-label="Fermer">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+    <div class="modal-body">
+      <p class="text-sm text-secondary" style="margin-bottom:1rem">
+        Un compte sera créé pour <strong id="approve-name-display">—</strong>
+        (<span id="approve-email-display" class="text-muted">—</span>).
+        Définissez un mot de passe temporaire à lui communiquer.
+      </p>
+      <div class="form-group">
+        <label class="form-label" for="approve-password">Mot de passe temporaire <span class="required">*</span></label>
+        <input type="password" id="approve-password" class="form-input" minlength="8" placeholder="Min. 8 caractères" required />
+        <span class="form-hint">Communiquez ce mot de passe à l'utilisateur par un canal sécurisé.</span>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button type="button" class="btn btn-secondary" onclick="closeModal('approve-modal')">Annuler</button>
+      <button type="button" class="btn btn-primary" id="approve-submit-btn" data-loading-text="Création du compte…" onclick="submitApprove()">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+        Approuver et créer le compte
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- Modal: Refuser demande -->
+<div class="modal-backdrop" id="reject-modal">
+  <div class="modal modal-sm">
+    <div class="modal-header">
+      <h2 class="modal-title">Refuser la demande</h2>
+      <button type="button" class="modal-close" onclick="closeModal('reject-modal')" title="Fermer" aria-label="Fermer">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+    <div class="modal-body">
+      <p class="text-sm text-secondary" style="margin-bottom:1rem">
+        Demande de <strong id="reject-name-display">—</strong>. Un motif optionnel peut être fourni.
+      </p>
+      <div class="form-group">
+        <label class="form-label" for="reject-reason">Motif du refus <span style="color:var(--text-muted);font-weight:400">(optionnel)</span></label>
+        <textarea id="reject-reason" class="form-input" rows="3"
+          placeholder="Ex : Informations insuffisantes, département non éligible…"></textarea>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button type="button" class="btn btn-secondary" onclick="closeModal('reject-modal')">Annuler</button>
+      <button type="button" class="btn btn-danger" id="reject-submit-btn" data-loading-text="Refus…" onclick="submitReject()">
+        Refuser la demande
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- Modal: Nouvelle catégorie -->
+<div class="modal-backdrop" id="new-category-modal">
+  <div class="modal modal-sm">
+    <div class="modal-header">
+      <h2 class="modal-title">Nouvelle catégorie</h2>
+      <button type="button" class="modal-close" onclick="closeModal('new-category-modal')" title="Fermer" aria-label="Fermer">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+    <div class="modal-body">
+      <div class="form-group">
+        <label class="form-label" for="cat-name">Nom <span class="required">*</span></label>
+        <input type="text" id="cat-name" class="form-input" placeholder="Ex : Sécurité, Formation…" required />
+      </div>
+      <div class="form-group">
+        <label class="form-label" for="cat-color">Couleur</label>
+        <div class="d-flex items-center gap-2">
+          <input type="color" id="cat-color" value="#58A6FF" style="width:40px;height:36px;padding:2px;border-radius:var(--radius-sm);border:1px solid var(--border-default);cursor:pointer" />
+          <span class="text-sm text-secondary">Choisir la couleur d'affichage</span>
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button type="button" class="btn btn-secondary" onclick="closeModal('new-category-modal')">Annuler</button>
+      <button type="button" class="btn btn-primary" id="cat-submit-btn" data-loading-text="Création…" onclick="submitNewCategory()">Créer</button>
+    </div>
+  </div>
+</div>
+
+<style>
+  .categories-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 0.75rem;
+    margin-top: 0.5rem;
+  }
+  .category-card {
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-default);
+    border-radius: var(--radius-md);
+    padding: 0.875rem 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.5rem;
+  }
+  .category-card-left { display: flex; align-items: center; gap: 0.625rem; }
+  .category-dot { width: 12px; height: 12px; border-radius: 50%; flex-shrink: 0; }
+  .category-name { font-size: var(--text-sm); font-weight: 500; }
+  .category-default-tag { font-size: 10px; color: var(--text-muted); }
+  .req-avatar-thumb {
+    width: 36px; height: 36px; border-radius: 50%; object-fit: cover;
+    border: 1px solid var(--border-default);
+  }
+  .status-pending  { color: var(--accent-warning); }
+  .status-approved { color: var(--accent-success); }
+  .status-rejected { color: var(--accent-danger); }
+</style>
 
 <script src="https://cdn.jsdelivr.net/npm/appwrite@16/dist/iife/sdk.min.js"></script>
 <script type="module">
   import { initTheme, toggleTheme } from './js/theme.js';
   import { requireAdmin, populateSidebarUser, initLogoutBtn } from './js/auth.js';
-  import { initSidebar, showToast, openModal, closeModal, confirmDialog, setButtonLoading, renderEmptyState } from './js/ui.js';
+  import { initSidebar, showToast, openModal, closeModal, confirmDialog, setButtonLoading } from './js/ui.js';
   import { getAllWorkspaces, deleteWorkspace } from './js/workspaces.js';
+  import { getAllRequests, approveRequest, rejectRequest, deleteRequest } from './js/requests.js';
+  import { getAllProfiles, getAvatarUrl } from './js/profiles.js';
+  import { getCategories, createCategory, deleteCategory, seedDefaultCategories, DEFAULT_CATEGORIES } from './js/categories.js';
   import { account, ID } from './js/appwrite.js';
   import { hidePageLoader } from './js/ui.js';
   import { escapeHtml, formatDate, stringToColor, getInitials } from './js/utils.js';
@@ -180,9 +350,12 @@
   window.openModal  = openModal;
   window.closeModal = closeModal;
 
-  let currentUser  = null;
-  let allWorkspaces= [];
-  let allMembers   = []; // simulated from workspaces members array
+  let currentUser   = null;
+  let allWorkspaces = [];
+  let allProfiles   = [];
+  let allRequests   = [];
+  let allCategories = [];
+  let pendingRequest = null; // request being approved/rejected
 
   async function init() {
     initTheme();
@@ -192,49 +365,168 @@
     if (!currentUser) return;
     populateSidebarUser(currentUser);
 
-    await Promise.all([loadGroups()]);
-    renderMembersFromGroups();
+    await Promise.all([loadRequests(), loadGroups(), loadProfiles(), loadCategories()]);
+    await seedDefaultCategories(currentUser.$id);
+    await loadCategories(true);
     hidePageLoader();
   }
 
-  async function loadGroups() {
-    allWorkspaces = await getAllWorkspaces();
-    renderGroupsTable();
+  // ==================== REQUESTS ====================
+  async function loadRequests() {
+    allRequests = await getAllRequests();
+    renderRequestsTable();
+    // Update pending badge
+    const pending = allRequests.filter(r => r.status === 'pending').length;
+    const badge = document.getElementById('pending-badge');
+    if (badge) {
+      badge.textContent = pending;
+      badge.style.display = pending > 0 ? 'inline-flex' : 'none';
+    }
   }
 
-  // Collect unique member IDs from all workspaces
-  function renderMembersFromGroups() {
-    const memberIds = [...new Set(allWorkspaces.flatMap(ws => ws.members || []))];
-    const tbody = document.getElementById('members-tbody');
-    if (!memberIds.length) {
-      tbody.innerHTML = `<tr><td colspan="5"><div class="empty-state"><p>Aucun membre trouvé dans les groupes.</p></div></td></tr>`;
+  const STATUS_LABELS_REQ = { pending: 'En attente', approved: 'Approuvée', rejected: 'Refusée' };
+  const STATUS_CLASS_REQ  = { pending: 'status-pending', approved: 'status-approved', rejected: 'status-rejected' };
+
+  function renderRequestsTable() {
+    const tbody = document.getElementById('requests-tbody');
+    if (!allRequests.length) {
+      tbody.innerHTML = `<tr><td colspan="7" class="text-center text-secondary p-4">Aucune demande</td></tr>`;
       return;
     }
-    allMembers = memberIds.map(id => ({ id, name: id.slice(0,12), email: id+'@ismgb.edu' }));
-    renderMembersTable(allMembers);
-  }
-
-  function renderMembersTable(members) {
-    const tbody = document.getElementById('members-tbody');
-    tbody.innerHTML = members.map(m => {
-      const color   = stringToColor(m.id);
-      const initials= m.id.slice(0,2).toUpperCase();
-      const isAdmin = m.id === currentUser.$id;
+    tbody.innerHTML = allRequests.map(r => {
+      const avatarUrl = r.avatar_file_id ? getAvatarUrl(r.avatar_file_id, 36) : null;
+      const initials  = getInitials(r.name);
+      const color     = stringToColor(r.email);
+      const statusCls = STATUS_CLASS_REQ[r.status] || '';
       return `
         <tr>
           <td>
             <div class="d-flex items-center gap-2">
-              <div class="avatar avatar-sm" style="background:${color}">${initials}</div>
-              <span class="font-medium">${escapeHtml(m.name)}</span>
-              ${isAdmin ? '<span class="badge badge-admin">Admin</span>' : ''}
+              ${avatarUrl
+                ? `<img src="${avatarUrl}" alt="${escapeHtml(r.name)}" class="req-avatar-thumb" />`
+                : `<div class="avatar avatar-sm" style="background:${color}">${escapeHtml(initials)}</div>`}
+              <span class="font-medium">${escapeHtml(r.name)}</span>
             </div>
           </td>
-          <td class="text-secondary text-sm">${escapeHtml(m.email)}</td>
-          <td><span class="badge ${isAdmin?'badge-admin':'badge-member'}">${isAdmin?'Admin':'Membre'}</span></td>
+          <td class="text-sm text-secondary">${escapeHtml(r.email)}</td>
+          <td class="text-sm">${escapeHtml(r.department || '—')}</td>
+          <td class="text-sm text-secondary" title="${escapeHtml(r.message||'')}">${r.message ? escapeHtml(r.message.slice(0,40)) + (r.message.length>40?'…':'') : '—'}</td>
+          <td><span class="text-sm font-medium ${statusCls}">${STATUS_LABELS_REQ[r.status] || r.status}</span></td>
+          <td class="text-sm text-secondary">${formatDate(r.created_at)}</td>
+          <td>
+            <div class="table-actions">
+              ${r.status === 'pending' ? `
+                <button type="button" class="btn btn-ghost btn-sm" style="color:var(--accent-success)" title="Approuver" onclick="openApproveModal('${r.$id}')">
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+                  Approuver
+                </button>
+                <button type="button" class="btn btn-ghost btn-sm" style="color:var(--accent-danger)" title="Refuser" onclick="openRejectModal('${r.$id}')">
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+                  Refuser
+                </button>
+              ` : `
+                <button type="button" class="btn btn-ghost btn-sm" style="color:var(--accent-danger)" onclick="removeRequest('${r.$id}')">Supprimer</button>
+              `}
+            </div>
+          </td>
+        </tr>
+      `;
+    }).join('');
+  }
+
+  window.openApproveModal = (requestId) => {
+    pendingRequest = allRequests.find(r => r.$id === requestId);
+    if (!pendingRequest) return;
+    document.getElementById('approve-name-display').textContent  = pendingRequest.name;
+    document.getElementById('approve-email-display').textContent = pendingRequest.email;
+    document.getElementById('approve-password').value = '';
+    openModal('approve-modal');
+  };
+
+  window.submitApprove = async () => {
+    if (!pendingRequest) return;
+    const pass = document.getElementById('approve-password').value;
+    if (!pass || pass.length < 8) { showToast('Le mot de passe doit faire au moins 8 caractères', 'error'); return; }
+    const btn = document.getElementById('approve-submit-btn');
+    setButtonLoading(btn, true);
+    try {
+      await approveRequest(pendingRequest.$id, pass);
+      closeModal('approve-modal');
+      showToast(`Compte créé pour ${pendingRequest.name}. Communiquez le mot de passe.`, 'success', 'Demande approuvée');
+      await loadRequests();
+      await loadProfiles();
+    } catch (err) {
+      const msg = err?.message || 'Erreur lors de la création du compte';
+      showToast(msg.includes('already') ? 'Cet email possède déjà un compte.' : msg, 'error');
+    } finally { setButtonLoading(btn, false); }
+  };
+
+  window.openRejectModal = (requestId) => {
+    pendingRequest = allRequests.find(r => r.$id === requestId);
+    if (!pendingRequest) return;
+    document.getElementById('reject-name-display').textContent = pendingRequest.name;
+    document.getElementById('reject-reason').value = '';
+    openModal('reject-modal');
+  };
+
+  window.submitReject = async () => {
+    if (!pendingRequest) return;
+    const reason = document.getElementById('reject-reason').value.trim();
+    const btn = document.getElementById('reject-submit-btn');
+    setButtonLoading(btn, true);
+    try {
+      await rejectRequest(pendingRequest.$id, reason);
+      closeModal('reject-modal');
+      showToast(`Demande de ${pendingRequest.name} refusée.`, 'warning');
+      await loadRequests();
+    } finally { setButtonLoading(btn, false); }
+  };
+
+  window.removeRequest = (id) => {
+    confirmDialog('Supprimer définitivement cette demande ?', async () => {
+      try {
+        await deleteRequest(id);
+        allRequests = allRequests.filter(r => r.$id !== id);
+        renderRequestsTable();
+        showToast('Demande supprimée', 'success');
+      } catch { showToast('Erreur lors de la suppression', 'error'); }
+    });
+  };
+
+  // ==================== MEMBERS ====================
+  async function loadProfiles() {
+    allProfiles = await getAllProfiles();
+    renderMembersTable(allProfiles);
+  }
+
+  function renderMembersTable(profiles) {
+    const tbody = document.getElementById('members-tbody');
+    if (!profiles.length) {
+      tbody.innerHTML = `<tr><td colspan="5"><div class="empty-state"><p>Aucun membre trouvé.</p></div></td></tr>`;
+      return;
+    }
+    tbody.innerHTML = profiles.map(p => {
+      const avatarUrl  = p.avatar_file_id ? getAvatarUrl(p.avatar_file_id, 36) : null;
+      const color      = stringToColor(p.user_id || p.email);
+      const initials   = getInitials(p.name);
+      const isAdminUser = p.user_id === currentUser.$id;
+      return `
+        <tr>
+          <td>
+            <div class="d-flex items-center gap-2">
+              ${avatarUrl
+                ? `<img src="${avatarUrl}" alt="${escapeHtml(p.name)}" class="req-avatar-thumb" />`
+                : `<div class="avatar avatar-sm" style="background:${color}">${escapeHtml(initials)}</div>`}
+              <span class="font-medium">${escapeHtml(p.name)}</span>
+              ${isAdminUser ? '<span class="badge badge-admin">Vous</span>' : ''}
+            </div>
+          </td>
+          <td class="text-secondary text-sm">${escapeHtml(p.email)}</td>
+          <td class="text-sm">${escapeHtml(p.department || '—')}</td>
           <td><span class="badge badge-member">Actif</span></td>
           <td>
             <div class="table-actions">
-              <button class="btn btn-ghost btn-sm" title="Voir profil" disabled>Profil</button>
+              <span class="text-xs text-muted">ID: ${p.user_id ? p.user_id.slice(0,10)+'…' : '—'}</span>
             </div>
           </td>
         </tr>
@@ -243,11 +535,19 @@
   }
 
   window.filterMembers = (q) => {
-    const filtered = allMembers.filter(m =>
-      m.name.toLowerCase().includes(q.toLowerCase()) || m.email.toLowerCase().includes(q.toLowerCase())
+    const filtered = allProfiles.filter(p =>
+      p.name.toLowerCase().includes(q.toLowerCase()) ||
+      p.email.toLowerCase().includes(q.toLowerCase()) ||
+      (p.department||'').toLowerCase().includes(q.toLowerCase())
     );
     renderMembersTable(filtered);
   };
+
+  // ==================== GROUPS ====================
+  async function loadGroups() {
+    allWorkspaces = await getAllWorkspaces();
+    renderGroupsTable();
+  }
 
   function renderGroupsTable() {
     const tbody = document.getElementById('groups-tbody');
@@ -259,21 +559,20 @@
       <tr>
         <td>
           <div class="d-flex items-center gap-2">
-            <span style="font-size:1.1rem">${ws.icon||'💻'}</span>
+            <span>${ws.icon || '💻'}</span>
             <div>
               <div class="font-medium">${escapeHtml(ws.name)}</div>
               ${ws.description ? `<div class="text-xs text-secondary">${escapeHtml(ws.description.slice(0,50))}</div>` : ''}
             </div>
           </div>
         </td>
-        <td class="text-secondary text-sm">${ws.created_by ? ws.created_by.slice(0,12)+'…' : '—'}</td>
+        <td class="text-secondary text-sm">${ws.created_by ? ws.created_by.slice(0,10)+'…' : '—'}</td>
         <td class="text-sm">${(ws.members||[]).length}</td>
         <td class="text-secondary text-sm">${formatDate(ws.created_at)}</td>
         <td>
           <div class="table-actions">
             <a href="group-detail.html?id=${ws.$id}" class="btn btn-ghost btn-sm">Voir</a>
-            <button class="btn btn-ghost btn-sm" style="color:var(--accent-danger)" onclick="deleteGroupAdmin('${ws.$id}','${escapeHtml(ws.name)}')">
-              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4h6v2"/></svg>
+            <button type="button" class="btn btn-ghost btn-sm btn-danger-ghost" title="Supprimer" onclick="deleteGroupAdmin('${ws.$id}','${escapeHtml(ws.name)}')">
               Supprimer
             </button>
           </div>
@@ -286,16 +585,78 @@
     confirmDialog(`Supprimer le groupe "${name}" et toutes ses tâches ?`, async () => {
       try {
         await deleteWorkspace(groupId);
-        allWorkspaces = allWorkspaces.filter(w=>w.$id!==groupId);
+        allWorkspaces = allWorkspaces.filter(w => w.$id !== groupId);
         renderGroupsTable();
-        showToast('Groupe supprimé','success');
-      } catch { showToast('Erreur lors de la suppression','error'); }
+        showToast('Groupe supprimé', 'success');
+      } catch { showToast('Erreur lors de la suppression', 'error'); }
     }, 'Supprimer le groupe');
   };
 
+  // ==================== CATEGORIES ====================
+  async function loadCategories(forceRefresh = false) {
+    allCategories = await getCategories(forceRefresh);
+    renderCategoriesGrid();
+  }
+
+  function renderCategoriesGrid() {
+    const grid = document.getElementById('categories-grid');
+    if (!allCategories.length) {
+      grid.innerHTML = `<p class="text-sm text-muted">Aucune catégorie. Cliquez sur "Nouvelle catégorie".</p>`;
+      return;
+    }
+    grid.innerHTML = allCategories.map(cat => `
+      <div class="category-card">
+        <div class="category-card-left">
+          <div class="category-dot" style="background:${cat.color || '#58A6FF'}"></div>
+          <div>
+            <div class="category-name">${escapeHtml(cat.name)}</div>
+            ${cat.is_default ? '<div class="category-default-tag">Par défaut</div>' : ''}
+          </div>
+        </div>
+        ${!cat.is_default ? `
+          <button type="button" class="btn btn-ghost btn-icon btn-sm" title="Supprimer" aria-label="Supprimer" onclick="removeCat('${cat.$id}','${escapeHtml(cat.name)}')">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M9 6V4h6v2"/></svg>
+          </button>` : ''}
+      </div>
+    `).join('');
+  }
+
+  window.openNewCategoryModal = () => {
+    document.getElementById('cat-name').value = '';
+    document.getElementById('cat-color').value = '#58A6FF';
+    openModal('new-category-modal');
+  };
+
+  window.submitNewCategory = async () => {
+    const name  = document.getElementById('cat-name').value.trim();
+    const color = document.getElementById('cat-color').value;
+    if (!name) { showToast('Le nom est requis', 'error'); return; }
+    const btn = document.getElementById('cat-submit-btn');
+    setButtonLoading(btn, true);
+    try {
+      await createCategory(name, color, currentUser.$id);
+      closeModal('new-category-modal');
+      showToast(`Catégorie "${name}" créée`, 'success');
+      await loadCategories(true);
+    } catch (err) {
+      showToast(err?.message || 'Erreur lors de la création', 'error');
+    } finally { setButtonLoading(btn, false); }
+  };
+
+  window.removeCat = (id, name) => {
+    confirmDialog(`Supprimer la catégorie "${name}" ? Les tâches existantes garderont leur catégorie actuelle.`, async () => {
+      try {
+        await deleteCategory(id);
+        await loadCategories(true);
+        showToast(`Catégorie "${name}" supprimée`, 'success');
+      } catch { showToast('Erreur lors de la suppression', 'error'); }
+    }, 'Supprimer la catégorie');
+  };
+
+  // ==================== SHARED ====================
   window.switchTab = (tab) => {
-    document.querySelectorAll('.tab-btn').forEach(b=>b.classList.toggle('active', b.dataset.tab===tab));
-    document.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('active'));
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.toggle('active', b.dataset.tab === tab));
+    document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
     document.getElementById(`tab-${tab}`)?.classList.add('active');
   };
 
@@ -308,15 +669,15 @@
     const name  = document.getElementById('cu-name').value.trim();
     const email = document.getElementById('cu-email').value.trim();
     const pass  = document.getElementById('cu-password').value;
-    if (!name || !email || !pass) { showToast('Remplissez tous les champs requis','error'); return; }
-    if (pass.length < 8) { showToast('Le mot de passe doit faire au moins 8 caractères','error'); return; }
-
+    if (!name || !email || !pass) { showToast('Remplissez tous les champs requis', 'error'); return; }
+    if (pass.length < 8) { showToast('Le mot de passe doit faire au moins 8 caractères', 'error'); return; }
     const btn = document.getElementById('cu-submit-btn');
     setButtonLoading(btn, true);
     try {
       await account.create(ID.unique(), email, pass, name);
       closeModal('create-user-modal');
-      showToast(`Compte créé pour ${name}`,'success');
+      showToast(`Compte créé pour ${name}`, 'success');
+      await loadProfiles();
     } catch (err) {
       const msg = err?.message || 'Erreur lors de la création';
       showToast(msg.includes('already') ? 'Cet email est déjà utilisé.' : msg, 'error');
@@ -324,6 +685,17 @@
   };
 
   init();
+</script>
+
+<script>
+  // Enregistrement du Service Worker pour PWA
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('./service-worker.js').then(registration => {
+      console.log('[PWA] Service Worker enregistré:', registration);
+    }).catch(error => {
+      console.warn('[PWA] Erreur lors de l\'enregistrement du Service Worker:', error);
+    });
+  }
 </script>
 </body>
 </html>

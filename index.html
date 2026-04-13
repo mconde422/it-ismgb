@@ -3,7 +3,9 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#0D1117" />
   <title>IT-ISMGB — Connexion</title>
+  <link rel="manifest" href="manifest.json" />
   <link rel="stylesheet" href="css/variables.css" />
   <link rel="stylesheet" href="css/base.css" />
   <link rel="stylesheet" href="css/forms.css" />
@@ -305,6 +307,11 @@
         </button>
       </form>
 
+      <p style="margin-top:1.25rem;text-align:center;font-size:var(--text-sm);color:var(--text-secondary)">
+        Pas encore de compte ?
+        <a href="register.html" style="color:var(--accent-primary);font-weight:500">Faire une demande d'accès</a>
+      </p>
+
       <div class="login-footer">
         <p>Institut Supérieur de Management et de Gestion des Affaires de Bissau</p>
         <p class="mt-1">© 2025 IT-ISMGB — Tous droits réservés</p>
@@ -375,6 +382,17 @@
   document.getElementById('email').addEventListener('keydown', e => {
     if (e.key === 'Enter') document.getElementById('password').focus();
   });
+</script>
+
+<script>
+  // Enregistrement du Service Worker pour PWA
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('./service-worker.js').then(registration => {
+      console.log('[PWA] Service Worker enregistré:', registration);
+    }).catch(error => {
+      console.warn('[PWA] Erreur lors de l\'enregistrement du Service Worker:', error);
+    });
+  }
 </script>
 
 </body>

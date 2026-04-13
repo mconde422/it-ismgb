@@ -3,7 +3,9 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#0D1117" />
   <title>IT-ISMGB — Groupe</title>
+  <link rel="manifest" href="manifest.json" />
   <link rel="stylesheet" href="css/variables.css" />
   <link rel="stylesheet" href="css/base.css" />
   <link rel="stylesheet" href="css/layout.css" />
@@ -214,11 +216,6 @@
             <label class="form-label" for="gt-category">Catégorie <span class="required">*</span></label>
             <select id="gt-category" class="form-select" required>
               <option value="">Choisir…</option>
-              <option value="reseau">Réseau</option>
-              <option value="materiel">Matériel</option>
-              <option value="logiciel">Logiciel</option>
-              <option value="maintenance">Maintenance</option>
-              <option value="graphisme">Graphisme</option>
             </select>
           </div>
           <div class="form-group">
@@ -243,7 +240,10 @@
           </div>
           <div class="form-group">
             <label class="form-label" for="gt-due">Date d'échéance</label>
-            <input type="date" id="gt-due" class="form-input" />
+            <div class="due-datetime-row">
+              <input type="date" id="gt-due" class="form-input" />
+              <input type="time" id="gt-due-time" class="form-input due-time-input" placeholder="HH:MM" title="Heure d'échéance" aria-label="Heure d'échéance" />
+            </div>
           </div>
         </div>
         <div class="form-group">
@@ -267,38 +267,58 @@
   </div>
 </div>
 
-<!-- Modal: Invite -->
+<!-- Modal: Ajouter un membre -->
 <div class="modal-backdrop" id="invite-modal">
   <div class="modal modal-sm">
     <div class="modal-header">
-      <h2 class="modal-title">Inviter un membre</h2>
-      <button class="modal-close" onclick="closeModal('invite-modal')">
+      <h2 class="modal-title">Ajouter un membre</h2>
+      <button type="button" class="modal-close" onclick="closeModal('invite-modal')" title="Fermer" aria-label="Fermer">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
       </button>
     </div>
     <div class="modal-body">
       <div class="form-group">
-        <label class="form-label" for="invite-email">Email de l'utilisateur</label>
-        <input type="email" id="invite-email" class="form-input" placeholder="utilisateur@ismgb.edu" />
-        <span class="form-hint">L'utilisateur recevra une invitation à rejoindre le groupe.</span>
+        <input type="search" id="user-picker-search" class="form-input" placeholder="Rechercher par nom ou email…"
+               oninput="filterUserPicker(this.value)" aria-label="Rechercher un utilisateur" />
       </div>
+      <div id="user-picker-list" class="user-picker-list"></div>
+      <p class="form-hint user-picker-hint">Seuls les utilisateurs ayant un compte apparaissent ici.</p>
     </div>
     <div class="modal-footer">
-      <button class="btn btn-secondary" onclick="closeModal('invite-modal')">Annuler</button>
-      <button class="btn btn-primary" id="invite-submit-btn" data-loading-text="Envoi…" onclick="submitInvite()">Inviter</button>
+      <button type="button" class="btn btn-secondary" onclick="closeModal('invite-modal')">Fermer</button>
     </div>
   </div>
 </div>
+
+<style>
+  .due-datetime-row { display:flex; gap:0.5rem; }
+  .due-datetime-row .form-input { flex:1; }
+  .due-time-input { width:110px !important; flex:0 0 110px !important; }
+  .member-row { display:flex; align-items:center; gap:0.75rem; padding:0.75rem 1rem; background:var(--bg-secondary); border:1px solid var(--border-default); border-radius:var(--radius-sm); }
+  .member-row-info { flex:1; }
+  .member-row-avatar-img { width:40px; height:40px; border-radius:50%; object-fit:cover; border:2px solid var(--border-default); }
+  .user-picker-item { display:flex; align-items:center; gap:0.625rem; padding:0.5rem 0.75rem; border-radius:var(--radius-sm); cursor:pointer; transition:background 0.1s; border:1px solid transparent; }
+  .user-picker-item:hover { background:var(--bg-secondary); border-color:var(--border-default); }
+  .user-picker-item.already-member { opacity:0.5; cursor:not-allowed; }
+  .user-picker-list { max-height:300px; overflow-y:auto; display:flex; flex-direction:column; gap:4px; }
+  .user-picker-hint { margin-top:0.5rem; }
+  .user-picker-item-name { font-size:var(--text-sm); font-weight:500; }
+  .user-picker-item-email { font-size:11px; color:var(--text-muted); }
+  .user-picker-avatar-img { width:32px; height:32px; border-radius:50%; object-fit:cover; }
+</style>
 
 <script src="https://cdn.jsdelivr.net/npm/appwrite@16/dist/iife/sdk.min.js"></script>
 <script type="module">
   import { initTheme, toggleTheme } from './js/theme.js';
   import { requireAuth, populateSidebarUser, isAdmin, initLogoutBtn } from './js/auth.js';
-  import { initSidebar, initHeaderSearch, showToast, openModal, closeModal, renderTaskCard, renderKanbanBoard, renderActivityLog, renderEmptyState, confirmDialog, setButtonLoading, validateForm, renderMemberAvatar } from './js/ui.js';
+  import { initSidebar, initHeaderSearch, showToast, openModal, closeModal, renderTaskCard, renderKanbanBoard, renderActivityLog, renderEmptyState, confirmDialog, setButtonLoading, validateForm, renderMemberAvatar, setCategoriesMap } from './js/ui.js';
   import { getGroupTasks, createTask, updateTask, deleteTask, changeTaskStatus } from './js/tasks.js';
   import { getWorkspaceById, inviteMemberByEmail, removeMember } from './js/workspaces.js';
   import { getWorkspaceActivity } from './js/activity.js';
   import { subscribeToGroupTasks, unsubscribeAll } from './js/realtime.js';
+  import { getCategories, populateCategorySelect, createCategory } from './js/categories.js';
+  import { getAllProfiles, getAvatarUrl } from './js/profiles.js';
+  import { initNotifications } from './js/notifications.js';
   import { filterTasks, sortTasks } from './js/search.js';
   import { hidePageLoader } from './js/ui.js';
   import { escapeHtml, stringToColor, getInitials, getUrlParam } from './js/utils.js';
@@ -307,11 +327,13 @@
   window.openModal  = openModal;
   window.closeModal = closeModal;
 
-  let currentUser = null;
-  let workspace   = null;
-  let allTasks    = [];
-  let currentView = 'list';
-  let currentTab  = 'tasks';
+  let currentUser   = null;
+  let workspace     = null;
+  let allTasks      = [];
+  let allCategories = [];
+  let allProfiles   = [];
+  let currentView   = 'list';
+  let currentTab    = 'tasks';
   const workspaceId = getUrlParam('id');
 
   async function init() {
@@ -326,9 +348,33 @@
     if (!currentUser) return;
     populateSidebarUser(currentUser);
 
-    await Promise.all([loadWorkspace(), loadTasks()]);
+    // Load categories & profiles in parallel with workspace/tasks
+    const [, , cats, profiles] = await Promise.all([
+      loadWorkspace(), loadTasks(),
+      getCategories(), getAllProfiles(),
+    ]);
+    allCategories = cats;
+    allProfiles   = profiles;
+    setCategoriesMap(allCategories);
+
+    // Populate category selects
+    populateCategorySelect(document.getElementById('gt-category'), allCategories, '', true);
+    populateGroupFilterCategory();
+
     setupRealtime();
+    initNotifications(currentUser);
     hidePageLoader();
+  }
+
+  function populateGroupFilterCategory() {
+    const sel = document.getElementById('g-filter-category');
+    if (!sel) return;
+    sel.innerHTML = '<option value="">Toutes catégories</option>';
+    allCategories.forEach(c => {
+      const opt = document.createElement('option');
+      opt.value = c.slug; opt.textContent = c.name;
+      sel.appendChild(opt);
+    });
   }
 
   async function loadWorkspace() {
@@ -360,10 +406,17 @@
 
   function populateAssigneeSelect() {
     const sel = document.getElementById('gt-assignee');
-    sel.innerHTML = '<option value="">Non assigné</option>' +
-      (workspace.members || []).map(id =>
-        `<option value="${id}">${id === currentUser.$id ? 'Moi (' + currentUser.name + ')' : id.slice(0,8)+'…'}</option>`
-      ).join('');
+    sel.innerHTML = '<option value="">Non assigné</option>';
+    // Use real profile names for workspace members
+    (workspace.members || []).forEach(id => {
+      const profile = allProfiles.find(p => p.user_id === id);
+      const label   = id === currentUser.$id
+        ? `Moi (${currentUser.name})`
+        : (profile?.name || id.slice(0, 10) + '…');
+      const opt = document.createElement('option');
+      opt.value = id; opt.textContent = label;
+      sel.appendChild(opt);
+    });
   }
 
   async function loadTasks() {
@@ -438,20 +491,26 @@
     if (!workspace) return;
     const canManage = workspace.created_by === currentUser.$id || isAdmin(currentUser);
     el.innerHTML = workspace.members.map(id => {
-      const isOwner = id === workspace.created_by;
-      const isMe    = id === currentUser.$id;
-      const color   = stringToColor(id);
-      const initials = id.slice(0,2).toUpperCase();
+      const isOwner  = id === workspace.created_by;
+      const isMe     = id === currentUser.$id;
+      const profile  = allProfiles.find(p => p.user_id === id);
+      const name     = isMe ? currentUser.name : (profile?.name || id.slice(0, 10) + '…');
+      const dept     = profile?.department || '';
+      const avatarUrl = profile?.avatar_file_id ? getAvatarUrl(profile.avatar_file_id, 40) : null;
+      const color    = stringToColor(id);
+      const initials = getInitials(name);
       return `
-        <div class="d-flex items-center gap-3" style="padding:0.75rem 1rem;background:var(--bg-secondary);border:1px solid var(--border-default);border-radius:var(--radius-sm)">
-          <div class="avatar avatar-md" style="background:${color}">${initials}</div>
-          <div style="flex:1">
-            <div class="text-sm font-semibold">${isMe ? currentUser.name+' (vous)' : id.slice(0,8)+'…'}</div>
-            <div class="text-xs text-secondary">${isOwner ? 'Propriétaire' : 'Membre'}</div>
+        <div class="member-row">
+          ${avatarUrl
+            ? `<img src="${avatarUrl}" alt="${escapeHtml(name)}" class="member-row-avatar-img" />`
+            : `<div class="avatar avatar-md" style="background:${color}">${escapeHtml(initials)}</div>`}
+          <div class="member-row-info">
+            <div class="text-sm font-semibold">${escapeHtml(name)}${isMe ? ' <span class="text-muted">(vous)</span>' : ''}</div>
+            <div class="text-xs text-secondary">${isOwner ? 'Propriétaire' : 'Membre'}${dept ? ' · ' + escapeHtml(dept) : ''}</div>
           </div>
           ${isOwner ? '<span class="badge badge-owner">Owner</span>' : '<span class="badge badge-member">Membre</span>'}
           ${canManage && !isOwner && !isMe ? `
-            <button class="btn btn-ghost btn-sm" onclick="removeMemberUI('${id}')" style="color:var(--accent-danger)">Retirer</button>
+            <button type="button" class="btn btn-ghost btn-sm" style="color:var(--accent-danger)" onclick="removeMemberUI('${id}')">Retirer</button>
           ` : ''}
         </div>
       `;
@@ -495,8 +554,27 @@
     document.getElementById('group-task-form').reset();
     document.getElementById('group-task-modal-title').textContent = 'Nouvelle tâche de groupe';
     document.getElementById('gt-submit-btn').textContent = 'Créer la tâche';
+    populateCategorySelect(document.getElementById('gt-category'), allCategories, '', true);
+    populateAssigneeSelect();
     openModal('group-task-modal');
   };
+
+  // Handle "create new category" option
+  document.getElementById('gt-category').addEventListener('change', async e => {
+    if (e.target.value !== '__new__') return;
+    e.target.value = '';
+    const name = prompt('Nom de la nouvelle catégorie :');
+    if (!name?.trim()) return;
+    try {
+      await createCategory(name.trim(), '#58A6FF', currentUser.$id);
+      allCategories = await getCategories(true);
+      setCategoriesMap(allCategories);
+      const slug = name.trim().toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/\s+/g,'_').replace(/[^a-z0-9_]/g,'');
+      populateCategorySelect(document.getElementById('gt-category'), allCategories, slug, true);
+      populateGroupFilterCategory();
+      showToast(`Catégorie "${name}" créée`, 'success');
+    } catch { showToast('Erreur lors de la création', 'error'); }
+  });
 
   window.editTask = (taskId) => {
     const task = allTasks.find(t => t.$id === taskId);
@@ -508,7 +586,9 @@
     document.getElementById('gt-priority').value = task.priority;
     document.getElementById('gt-status').value   = task.status;
     document.getElementById('gt-tags').value     = (task.tags||[]).join(', ');
-    if (task.due_date) document.getElementById('gt-due').value = task.due_date.slice(0,10);
+    if (task.due_date) document.getElementById('gt-due').value = task.due_date.slice(0, 10);
+    if (task.due_time) document.getElementById('gt-due-time').value = task.due_time;
+    populateCategorySelect(document.getElementById('gt-category'), allCategories, task.category, true);
     document.getElementById('gt-assignee').value = task.assignee_id || '';
     document.getElementById('group-task-modal-title').textContent = 'Modifier la tâche';
     document.getElementById('gt-submit-btn').textContent = 'Enregistrer';
@@ -532,6 +612,7 @@
       assignee_id  : assigneeId || null,
       assignee_name: assigneeId === currentUser.$id ? currentUser.name : (assigneeId ? assigneeId.slice(0,8) : null),
       due_date     : document.getElementById('gt-due').value || null,
+      due_time     : document.getElementById('gt-due-time').value || null,
       tags         : document.getElementById('gt-tags').value.split(',').map(t=>t.trim()).filter(Boolean),
     };
     setButtonLoading(btn, true);
@@ -567,23 +648,60 @@
   };
 
   window.openInviteModal = () => {
-    document.getElementById('invite-email').value = '';
+    document.getElementById('user-picker-search').value = '';
+    renderUserPicker(allProfiles);
     openModal('invite-modal');
   };
 
-  window.submitInvite = async () => {
-    const email = document.getElementById('invite-email').value.trim();
-    if (!email) { showToast('Veuillez entrer un email','error'); return; }
-    const btn = document.getElementById('invite-submit-btn');
-    setButtonLoading(btn, true);
+  function renderUserPicker(profiles) {
+    const list = document.getElementById('user-picker-list');
+    const members = workspace?.members || [];
+    if (!profiles.length) {
+      list.innerHTML = '<p class="text-sm text-muted p-2">Aucun utilisateur trouvé.</p>';
+      return;
+    }
+    list.innerHTML = profiles.map(p => {
+      const isMember = members.includes(p.user_id);
+      const avatarUrl = p.avatar_file_id ? getAvatarUrl(p.avatar_file_id, 32) : null;
+      const color    = stringToColor(p.user_id || p.email);
+      const initials = getInitials(p.name);
+      return `
+        <div class="user-picker-item${isMember ? ' already-member' : ''}"
+             ${!isMember ? `onclick="addMemberFromPicker('${p.user_id}','${escapeHtml(p.name)}')"` : ''}>
+          ${avatarUrl
+            ? `<img src="${avatarUrl}" alt="${escapeHtml(p.name)}" class="user-picker-avatar-img" />`
+            : `<div class="avatar" style="width:32px;height:32px;background:${color};font-size:12px">${escapeHtml(initials)}</div>`}
+          <div>
+            <div class="user-picker-item-name">${escapeHtml(p.name)}</div>
+            <div class="user-picker-item-email">${escapeHtml(p.email)}${p.department ? ' · ' + escapeHtml(p.department) : ''}</div>
+          </div>
+          ${isMember ? '<span class="badge badge-member" style="margin-left:auto">Déjà membre</span>' : ''}
+        </div>
+      `;
+    }).join('');
+  }
+
+  window.filterUserPicker = (q) => {
+    const filtered = allProfiles.filter(p =>
+      p.name.toLowerCase().includes(q.toLowerCase()) ||
+      p.email.toLowerCase().includes(q.toLowerCase()) ||
+      (p.department || '').toLowerCase().includes(q.toLowerCase())
+    );
+    renderUserPicker(filtered);
+  };
+
+  window.addMemberFromPicker = async (userId, userName) => {
+    if (!workspace) return;
     try {
-      await inviteMemberByEmail(workspaceId, email, workspace);
-      workspace.pending_invites = [...(workspace.pending_invites||[]), email];
-      closeModal('invite-modal');
-      showToast(`Invitation envoyée à ${email}`,'success');
+      await inviteMemberByEmail(workspaceId, userId, workspace);
+      workspace.members = [...(workspace.members || []), userId];
+      renderUserPicker(allProfiles); // refresh list (now shows as member)
+      renderMembersTab();
+      document.getElementById('tab-member-count').textContent = workspace.members.length;
+      showToast(`${userName} ajouté au groupe`, 'success');
     } catch (err) {
-      showToast(err?.message || 'Erreur','error');
-    } finally { setButtonLoading(btn, false); }
+      showToast(err?.message || 'Erreur lors de l\'ajout', 'error');
+    }
   };
 
   window.removeMemberUI = (memberId) => {
@@ -604,6 +722,17 @@
 
   window.addEventListener('unload', unsubscribeAll);
   init();
+</script>
+
+<script>
+  // Enregistrement du Service Worker pour PWA
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('./service-worker.js').then(registration => {
+      console.log('[PWA] Service Worker enregistré:', registration);
+    }).catch(error => {
+      console.warn('[PWA] Erreur lors de l\'enregistrement du Service Worker:', error);
+    });
+  }
 </script>
 </body>
 </html>

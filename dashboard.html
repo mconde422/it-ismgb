@@ -3,7 +3,9 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#0D1117" />
   <title>IT-ISMGB — Dashboard Admin</title>
+  <link rel="manifest" href="manifest.json" />
   <link rel="stylesheet" href="css/variables.css" />
   <link rel="stylesheet" href="css/base.css" />
   <link rel="stylesheet" href="css/layout.css" />
@@ -166,7 +168,7 @@
 <script type="module">
   import { initTheme, toggleTheme } from './js/theme.js';
   import { requireAdmin, populateSidebarUser, initLogoutBtn } from './js/auth.js';
-  import { initSidebar, showToast, renderActivityLog } from './js/ui.js';
+  import { initSidebar, showToast, renderActivityLog, setCategoriesMap } from './js/ui.js';
   import { getAllTasks, getOverdueTasks } from './js/tasks.js';
   import { getAllWorkspaces } from './js/workspaces.js';
   import { getGlobalActivity } from './js/activity.js';
@@ -174,6 +176,8 @@
   import { DATABASE_ID, COLLECTIONS, CATEGORY_LABELS } from './js/config.js';
   import { hidePageLoader } from './js/ui.js';
   import { escapeHtml, formatDate } from './js/utils.js';
+  import { getCategories } from './js/categories.js';
+  import { initNotifications } from './js/notifications.js';
 
   window.toggleThemePage = toggleTheme;
 
@@ -199,13 +203,16 @@
     const user = await requireAdmin();
     if (!user) return;
     populateSidebarUser(user);
+    initNotifications(user).catch(() => {});
 
-    const [tasks, workspaces, overdue, activity] = await Promise.all([
+    const [tasks, workspaces, overdue, activity, categories] = await Promise.all([
       getAllTasks(),
       getAllWorkspaces(),
       getOverdueTasks(),
       getGlobalActivity(15),
+      getCategories().catch(() => []),
     ]);
+    setCategoriesMap(categories);
 
     // Try to get total count of users
     let memberCount = '--';
@@ -215,7 +222,7 @@
     } catch {}
 
     renderKPIs(tasks, workspaces, overdue, memberCount);
-    renderBarChart(tasks);
+    renderBarChart(tasks, categories);
     renderDonut(tasks);
     renderOverdue(overdue);
     renderActivity(activity);
@@ -239,28 +246,32 @@
     document.getElementById('kpi-critical').textContent    = critical;
   }
 
-  function renderBarChart(tasks) {
-    const cats = Object.keys(CATEGORY_LABELS);
-    const counts = cats.map(c => tasks.filter(t=>t.category===c).length);
+  function renderBarChart(tasks, categories) {
+    // Use dynamic categories; fall back to static CATEGORY_LABELS if empty
+    const catList = categories.length
+      ? categories.map(c => ({ slug: c.slug, name: c.name, color: c.color || CAT_COLORS[c.slug] || '#58A6FF' }))
+      : Object.keys(CATEGORY_LABELS).map(k => ({ slug: k, name: CATEGORY_LABELS[k], color: CAT_COLORS[k] || '#58A6FF' }));
+
+    const counts = catList.map(c => tasks.filter(t => t.category === c.slug).length);
     const max = Math.max(...counts, 1);
     const chart = document.getElementById('bar-chart');
 
-    chart.innerHTML = cats.map((cat, i) => {
+    chart.innerHTML = catList.map((cat, i) => {
       const pct = Math.round(counts[i] / max * 100);
       return `
         <div class="bar-group">
           <div class="bar-wrapper">
-            <div class="bar" style="width:28px;height:${Math.max(pct,2)}%;background:${CAT_COLORS[cat]};opacity:0.85" data-value="${counts[i]}" title="${CATEGORY_LABELS[cat]}: ${counts[i]}"></div>
+            <div class="bar" style="width:28px;height:${Math.max(pct,2)}%;background:${cat.color};opacity:0.85" data-value="${counts[i]}" title="${escapeHtml(cat.name)}: ${counts[i]}"></div>
           </div>
-          <div class="bar-label" style="font-size:10px">${CATEGORY_LABELS[cat].slice(0,5)}</div>
+          <div class="bar-label" style="font-size:10px">${escapeHtml(cat.name.slice(0,5))}</div>
         </div>
       `;
     }).join('');
 
-    document.getElementById('bar-legend').innerHTML = cats.map((cat,i) => `
+    document.getElementById('bar-legend').innerHTML = catList.map((cat, i) => `
       <div class="chart-legend-item">
-        <div class="chart-legend-color" style="background:${CAT_COLORS[cat]}"></div>
-        ${escapeHtml(CATEGORY_LABELS[cat])} (${counts[i]})
+        <div class="chart-legend-color" style="background:${cat.color}"></div>
+        ${escapeHtml(cat.name)} (${counts[i]})
       </div>
     `).join('');
   }
@@ -335,6 +346,17 @@
   }
 
   init();
+</script>
+
+<script>
+  // Enregistrement du Service Worker pour PWA
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('./service-worker.js').then(registration => {
+      console.log('[PWA] Service Worker enregistré:', registration);
+    }).catch(error => {
+      console.warn('[PWA] Erreur lors de l\'enregistrement du Service Worker:', error);
+    });
+  }
 </script>
 </body>
 </html>
