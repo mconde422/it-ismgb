@@ -48,7 +48,7 @@ export async function countPendingRequests() {
   return res.total;
 }
 
-// ---- Approve a request (admin): creates account + profile + marks approved ----
+// ---- Approve a request (admin): creates account + marks approved ----
 export async function approveRequest(requestId, tempPassword) {
   const { ID: AppwriteID } = window.Appwrite;
   const { account } = await import('./appwrite.js');
@@ -65,36 +65,42 @@ export async function approveRequest(requestId, tempPassword) {
     throw new Error(`Cette demande a déjà été ${req.status === 'approved' ? 'approuvée' : 'rejetée'}`);
   }
 
-  // Check if account already exists
-  let newUser = null;
+  // Try to create the account
+  let accountCreated = false;
+  let createdUserId = null;
+
   try {
-    // Try to create the account
-    newUser = await account.create(AppwriteID.unique(), req.email, tempPassword, req.name);
+    const newUser = await account.create(AppwriteID.unique(), req.email, tempPassword, req.name);
+    createdUserId = newUser.$id;
+    accountCreated = true;
+    console.log('[requests.js] Compte créé:', newUser.$id);
+
+    // Auto-create the public profile (best-effort)
+    try {
+      await upsertProfile(
+        { $id: createdUserId, name: req.name, email: req.email },
+        req.avatar_file_id || null
+      );
+    } catch { /* non-blocking */ }
   } catch (error) {
-    // If account already exists, try to use it (error code 409 = Conflict)
-    if (error.code === 409 || (error.message && error.message.includes('already'))) {
-      console.warn('[requests.js] Compte existe déjà pour', req.email);
-      // Mark as approved anyway
-      return databases.updateDocument(DATABASE_ID, COL, requestId, {
-        status: 'approved',
-      });
-    }
-    // For other errors, re-throw
-    throw error;
+    console.warn('[requests.js] Erreur création compte:', error.code, error.message);
+    // Continue even if account creation fails - mark request as approved
+    // Admin will need to create account manually or via Appwrite Console
   }
 
-  // Auto-create the public profile (best-effort)
-  try {
-    await upsertProfile(
-      { $id: newUser.$id, name: req.name, email: req.email },
-      req.avatar_file_id || null
-    );
-  } catch { /* non-blocking */ }
-
-  // Mark as approved
-  return databases.updateDocument(DATABASE_ID, COL, requestId, {
+  // Mark as approved (regardless of account creation success)
+  await databases.updateDocument(DATABASE_ID, COL, requestId, {
     status: 'approved',
   });
+
+  // Return detailed info for UI feedback
+  return {
+    requestApproved: true,
+    accountCreated: accountCreated,
+    userId: createdUserId,
+    email: req.email,
+    name: req.name,
+  };
 }
 
 // ---- Reject a request (admin) ----

@@ -456,14 +456,26 @@
     btn.disabled = true;
     
     try {
-      await approveRequest(pendingRequest.$id, pass);
+      const result = await approveRequest(pendingRequest.$id, pass);
       closeModal('approve-modal');
-      showToast(`Compte créé pour ${pendingRequest.name}. Communiquez le mot de passe.`, 'success', 'Demande approuvée');
+      
+      if (result.accountCreated) {
+        // Account was created in Appwrite
+        showToast(`✅ Compte créé pour ${pendingRequest.name}. Email: ${result.email}`, 'success', 'Demande approuvée');
+      } else {
+        // Account creation failed but request was marked as approved
+        showToast(
+          `✅ Demande approuvée pour ${pendingRequest.name}\n⚠️ Créez le compte manuellement dans Appwrite Console`,
+          'warning',
+          'Approbation réussie'
+        );
+      }
+      
       await loadRequests();
       await loadProfiles();
     } catch (err) {
-      const msg = err?.message || 'Erreur lors de la création du compte';
-      showToast(msg.includes('already') ? 'Cet email possède déjà un compte.' : msg, 'error');
+      const msg = err?.message || 'Erreur lors de l\'approbation';
+      showToast(msg, 'error');
     } finally { 
       setButtonLoading(btn, false);
       btn.disabled = false;
