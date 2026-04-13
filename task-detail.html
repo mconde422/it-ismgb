@@ -281,12 +281,11 @@
 <script type="module">
   import { initTheme, toggleTheme } from './js/theme.js';
   import { requireAuth, populateSidebarUser, isAdmin, initLogoutBtn } from './js/auth.js';
-  import { initSidebar, showToast, openModal, closeModal, renderActivityLog, confirmDialog, renderMemberAvatar, setCategoriesMap } from './js/ui.js';
+  import { initSidebar, showToast, openModal, closeModal, renderActivityLog, confirmDialog, renderMemberAvatar, setCategoriesMap, hidePageLoader } from './js/ui.js';
   import { getTaskById, updateTask, deleteTask, getSubtasks, createSubtask, toggleSubtask, deleteSubtask, changeTaskStatus } from './js/tasks.js';
   import { getComments, addComment, deleteComment } from './js/comments.js';
   import { getTaskActivity, logActivity } from './js/activity.js';
   import { subscribeToComments, subscribeToSubtasks, unsubscribeAll } from './js/realtime.js';
-  import { hidePageLoader } from './js/ui.js';
   import { formatDate, formatDateTime, formatRelative, getInitials, stringToColor, getUrlParam, escapeHtml, isOverdue } from './js/utils.js';
   import { getCategories } from './js/categories.js';
   import { initNotifications } from './js/notifications.js';

@@ -2,7 +2,7 @@
 // IT-ISMGB — User Registration Requests
 // ============================================
 
-import { databases, Query, ID } from './appwrite.js';
+import { databases, account, Query, ID } from './appwrite.js';
 import { DATABASE_ID, COLLECTIONS } from './config.js';
 import { upsertProfile } from './profiles.js';
 
@@ -50,9 +50,6 @@ export async function countPendingRequests() {
 
 // ---- Approve a request (admin): creates account + marks approved ----
 export async function approveRequest(requestId, tempPassword) {
-  const { ID: AppwriteID } = window.Appwrite;
-  const { account } = await import('./appwrite.js');
-
   // Fetch the request
   const req = await databases.getDocument(DATABASE_ID, COL, requestId);
 
@@ -70,7 +67,7 @@ export async function approveRequest(requestId, tempPassword) {
   let createdUserId = null;
 
   try {
-    const newUser = await account.create(AppwriteID.unique(), req.email, tempPassword, req.name);
+    const newUser = await account.create(ID.unique(), req.email, tempPassword, req.name);
     createdUserId = newUser.$id;
     accountCreated = true;
     console.log('[requests.js] Compte créé:', newUser.$id);
@@ -91,6 +88,7 @@ export async function approveRequest(requestId, tempPassword) {
   // Mark as approved (regardless of account creation success)
   await databases.updateDocument(DATABASE_ID, COL, requestId, {
     status: 'approved',
+    reviewed_at: new Date().toISOString(),
   });
 
   // Return detailed info for UI feedback
@@ -106,7 +104,9 @@ export async function approveRequest(requestId, tempPassword) {
 // ---- Reject a request (admin) ----
 export async function rejectRequest(requestId, reason = '') {
   return databases.updateDocument(DATABASE_ID, COL, requestId, {
-    status: 'rejected',
+    status     : 'rejected',
+    reject_reason: reason || null,
+    reviewed_at : new Date().toISOString(),
   });
 }
 

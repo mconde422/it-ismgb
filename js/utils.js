@@ -2,6 +2,8 @@
 // IT-ISMGB — Utilities
 // ============================================
 
+import { Query } from './appwrite.js';
+
 // ---- Date formatting ----
 export function formatDate(dateStr) {
   if (!dateStr) return '—';
@@ -185,7 +187,6 @@ export function hide(selector, parent = document) {
 
 // ---- Pagination ----
 export function buildPaginationQueries(page = 1, pageSize = 25, offset = null) {
-  const { Query } = window.Appwrite;
   return [
     Query.limit(pageSize),
     Query.offset(offset !== null ? offset : (page - 1) * pageSize),

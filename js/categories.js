@@ -40,6 +40,15 @@ export async function createCategory(name, color, userId) {
     .replace(/[^a-z0-9_]/g, '')
     .replace(/^_+|_+$/g, '');
 
+  // Check slug uniqueness
+  const existing = await databases.listDocuments(DATABASE_ID, COLLECTIONS.CATEGORIES, [
+    Query.equal('slug', slug),
+    Query.limit(1),
+  ]);
+  if (existing.total > 0) {
+    throw new Error(`Une catégorie avec le nom "${name}" existe déjà.`);
+  }
+
   _cache = null; // Invalidate cache
 
   return databases.createDocument(DATABASE_ID, COLLECTIONS.CATEGORIES, ID.unique(), {

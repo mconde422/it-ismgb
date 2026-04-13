@@ -15,13 +15,15 @@
 
     .register-shell {
       display: grid;
-      min-height: 100vh;
+      height: auto;
+      width: 100%;
     }
 
     @media (min-width: 768px) {
       body { overflow: hidden; }
       .register-shell {
         grid-template-columns: 1fr 1fr;
+        min-height: 100vh;
       }
     }
 

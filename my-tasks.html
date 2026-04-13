@@ -281,7 +281,7 @@
     populateCategorySelect(document.getElementById('task-category'), allCategories, '', true);
 
     await loadTasks();
-    initNotifications(currentUser);
+    await initNotifications(currentUser).catch(() => {});
     hidePageLoader();
   }
 

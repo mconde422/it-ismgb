@@ -82,7 +82,7 @@ export async function getGroupTasks(workspaceId, filters = {}) {
 export async function getAllTasks(filters = {}) {
   const queries = [
     Query.orderDesc('created_at'),
-    Query.limit(PAGE_SIZE),
+    Query.limit(500),
   ];
 
   if (filters.status)   queries.push(Query.equal('status', filters.status));
@@ -171,7 +171,7 @@ export async function getOverdueTasks() {
     Query.lessThan('due_date', now),
     Query.notEqual('status', 'done'),
     Query.orderAsc('due_date'),
-    Query.limit(50),
+    Query.limit(500),
   ]);
   return res.documents;
 }

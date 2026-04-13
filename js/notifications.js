@@ -61,6 +61,19 @@ function _injectBell() {
   document.getElementById('notif-clear').addEventListener('click', e => { e.stopPropagation(); _clearAll(); });
   document.addEventListener('click', () => _close());
   _dropdown.addEventListener('click', e => e.stopPropagation());
+
+  // Event delegation for dismiss buttons — defined once, never reassigned
+  document.getElementById('notif-body').addEventListener('click', e => {
+    const btn = e.target.closest('.notif-dismiss');
+    if (!btn) return;
+    const id = btn.closest('.notif-item')?.dataset.id;
+    if (!id) return;
+    e.stopPropagation();
+    const dismissed = _getDismissed();
+    if (!dismissed.includes(id)) { dismissed.push(id); localStorage.setItem(LS_DISMISSED, JSON.stringify(dismissed)); }
+    _list = _list.filter(n => n.id !== id);
+    _render();
+  });
 }
 
 // ============================================
@@ -157,17 +170,11 @@ function _render() {
         </div>
         <div class="notif-item-btns">
           <a href="task-detail.html?id=${n.taskId}" class="notif-goto">Voir</a>
-          <button class="notif-dismiss" onclick="window._dismissNotif('${n.id}')">×</button>
+          <button class="notif-dismiss" title="Ignorer">×</button>
         </div>
       </div>`;
   }).join('');
 
-  window._dismissNotif = id => {
-    const dismissed = _getDismissed();
-    if (!dismissed.includes(id)) { dismissed.push(id); localStorage.setItem(LS_DISMISSED, JSON.stringify(dismissed)); }
-    _list = _list.filter(n => n.id !== id);
-    _render();
-  };
 }
 
 // ============================================

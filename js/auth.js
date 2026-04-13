@@ -2,7 +2,7 @@
 // IT-ISMGB — Authentication
 // ============================================
 
-import { account } from './appwrite.js';
+import { account, ID } from './appwrite.js';
 import { showToast } from './ui.js';
 import { getInitials, stringToColor } from './utils.js';
 import { upsertProfile } from './profiles.js';
@@ -79,12 +79,8 @@ export async function redirectIfLoggedIn(dest = 'my-tasks.html') {
 
 // ---- Admin SDK: create user account ----
 export async function createUserAccount(name, email, password, role = 'member') {
-  // Appwrite Users API (admin only — must be called server-side or via admin key)
-  // In a browser context, we use account.create and then update labels via Functions/Server SDK
-  // For simplicity, we create the session with account.create
-  const { ID } = window.Appwrite;
-  const newUser = await account.create(ID.unique(), email, password, name);
   // Note: setting labels requires Admin API or a backend function
+  const newUser = await account.create(ID.unique(), email, password, name);
   return newUser;
 }
 
