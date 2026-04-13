@@ -31,7 +31,14 @@ export async function getCurrentUser() {
   try {
     _currentUser = await account.get();
     return _currentUser;
-  } catch {
+  } catch (error) {
+    // 401 Unauthorized est attendu quand l'utilisateur n'est pas connecté
+    // Retourner null silencieusement sans aficher l'erreur
+    if (error.code === 401) {
+      return null;
+    }
+    // Autres erreurs: logguer
+    console.warn('[Auth] Erreur lors de la récupération de l\'utilisateur:', error);
     return null;
   }
 }

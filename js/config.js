@@ -12,7 +12,7 @@ export const COLLECTIONS = {
   SUBTASKS     : 'subtasks',
   COMMENTS     : 'comments',
   ACTIVITY_LOGS: 'activity_logs',
-  USERS_REQUESTS: 'users_requests',
+  USER_REQUESTS: 'users_requests',
   PROFILES     : 'profiles',
   CATEGORIES   : 'categories',
 };
